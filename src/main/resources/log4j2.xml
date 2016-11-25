@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="5" verbose="true">
+
+	<!-- Gestion des flux de sortie -->
+	<Appenders>
+
+		<!-- /!\ important: Tous les appendders doivent rester dans le mode ignorer 
+			les exceptions (mode par defaut) pour eviter de planter Spring si un des 
+			appenders retourne une erreur -->
+		<Console name="console">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+		</Console>
+
+		<Routing name="toLogFile">
+			<!-- clé determinant le chemin à emprunter -->
+
+			<Routes pattern="$${ctx:routingkey}">
+				<!-- This route is chosen if ThreadContext has no value for key filename. -->
+				<Route key="$${ctx:routingkey}">
+					<RollingFile name="Rolling-default" filename="/var/log/spring/default.log"
+						filePattern="/var/log/spring/default-older-%d{yyyy-MM-dd}.log.gz">
+						<PatternLayout
+							pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+						<Policies>
+							<TimeBasedTriggeringPolicy interval="1" />
+						</Policies>
+					</RollingFile>
+				</Route>
+
+				<Route>
+					<RollingFile name="Rolling-${ctx:baseid}_${ctx:loggerfolder}"
+						fileName="/var/log/spring/${ctx:baseid}/${ctx:loggerfolder}.log"
+						filePattern="/var/log/spring/${ctx:baseid}/${ctx:loggerfolder}-%d{yyyy-MM-dd}.log.gz"
+						ignoreExceptions="false">
+						<PatternLayout
+							pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+						<Policies>
+							<TimeBasedTriggeringPolicy interval="1" />
+						</Policies>
+					</RollingFile>
+				</Route>
+			</Routes>
+		</Routing>
+
+		<Async name="toAsyncLogFile" blocking="false" bufferSize="512"
+			errorRef="console" shutdownTimeout="20000">
+			<AppenderRef ref="toLogFile" />
+		</Async>
+
+	</Appenders>
+
+	<Loggers>
+
+		<!-- Attention le logger ROOT est OBLIGATOIRE -->
+		<Root level="DEBUG">
+			<AppenderRef ref="console" />
+		</Root>
+
+		<Logger level="DEBUG" name="com.serkan" additivity="false">
+			<AppenderRef ref="toAsyncLogFile" />
+		</Logger>
+
+	</Loggers>
+</Configuration>

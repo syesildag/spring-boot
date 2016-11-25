@@ -1,0 +1,5 @@
+build.path.exportedFolder=src/main/webapp/resources/typings
+build.path.sourceFolder=src/main/webapp/resources/typescript
+compiler.outputDirOption=src/main/webapp/resources/js
+compiler.outputFileOption=bundle.js
+eclipse.preferences.version=1

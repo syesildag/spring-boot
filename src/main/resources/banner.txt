@@ -1,0 +1,4 @@
+============8<=========SERKAN===8<============8<========
+:: Version     ::        ${application.formatted-version}
+:: Spring Boot ::        ${spring-boot.formatted-version}
+============8<============8<============8<==============
