@@ -13,6 +13,7 @@ public class Profile implements EnvironmentAware {
    public static final String DEV = "dev";
    public static final String PROD = "prod";
    
+   @SuppressWarnings("boxing")
    public Boolean isDevEnvironment()
    {
       for(String sActiveProfile : this.environment.getActiveProfiles())

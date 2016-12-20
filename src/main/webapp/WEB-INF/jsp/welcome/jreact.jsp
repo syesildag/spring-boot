@@ -83,6 +83,7 @@
      
      JReact.renderDOM(JReact.createElement(JReactComponents.Counter, {state: {times: 3}}), jQuery('#counter'));
      JReact.renderDOM(JReact.createElement(JReactComponents.MyList, {}), jQuery('#mylist'));
+     JReact.renderDOM(JReact.createElement(JReactComponents.MyGridList, {}), jQuery('#mygridlist'));
      JReact.renderDOM(JReact.createElement(JReactComponents.Template, {templateID: 'serkan', name: 'xxxxx', label: 'hello template'}), jQuery('#template'));
    });
    </script>
@@ -98,6 +99,8 @@
        <span id="draggable"></span>
        <span id="droppable"></span>
        <span id="mylist"></span>
+       <span>==========</span>
+       <span id="mygridlist"></span>
        <span id="template"></span>
      </p>
    </div>

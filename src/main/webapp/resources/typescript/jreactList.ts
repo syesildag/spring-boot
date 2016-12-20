@@ -75,19 +75,19 @@ module JReactComponents {
 
   export interface ListProps extends JReact.Props {
     state?: ListState,
-    axis: Axis,
-    initialIndex: number,
-    itemRenderer: ItemRenderer,
-    itemSizeEstimator: ItemSizeEstimator,
-    itemSizeGetter: ItemSizeGetter,
-    itemsRenderer: ItemsRenderer,
+    axis?: Axis,
+    initialIndex?: number,
+    itemRenderer?: ItemRenderer,
+    itemSizeEstimator?: ItemSizeEstimator,
+    itemSizeGetter?: ItemSizeGetter,
+    itemsRenderer?: ItemsRenderer,
     length: number,
     pageSize: number,
-    scrollParentGetter: ScrollParentGetter,
+    scrollParentGetter?: ScrollParentGetter,
     threshold: number,
     listType: ListType,
-    useStaticSize: boolean,
-    useTranslate3d: boolean
+    useStaticSize?: boolean,
+    useTranslate3d?: boolean
   }
 
   export interface ListState {
@@ -103,7 +103,6 @@ module JReactComponents {
 
   export class List extends JReact.Component<ListProps, ListState, ListActionType, ListState> {
 
-    private items: JReact.Component<any, any, any, any>;
     private cache: Cache;
     private scrollParent: HTMLElement;
 
@@ -115,6 +114,10 @@ module JReactComponents {
       const {fromIndex, size} = this.constrain(initialIndex, pageSize, itemsPerRow, this.props);
       this.state = { fromIndex, size, itemsPerRow };
       this.cache = {};
+    }
+
+    public getTag(): string {
+      return 'div';
     }
 
     private update(field: number = 1, action: JReact.Action<ListActionType, ListState>, actionField: number): number {
@@ -146,7 +149,7 @@ module JReactComponents {
     public componentDidMount() {
       this.updateFrame = this.updateFrame.bind(this);
       jQuery(window).bind('resize', this.updateFrame);
-      this.updateFrame(this.scrollTo.bind(this, this.props.initialIndex));
+      this.updateFrame();
     }
 
     public componentDidUpdate() {
@@ -158,15 +161,22 @@ module JReactComponents {
       jQuery(this.scrollParent).unbind('scroll', this.updateFrame);
     }
 
-    private getOffset(el: HTMLElement) {
-      const {axis} = this.props;
+    private updateFrame(eventObject?: JQueryEventObject) {
+      this.updateScrollParent();
+      switch (this.props.listType) {
+        case ListType.variable: return this.updateVariableFrame();
+        case ListType.uniform: return this.updateUniformFrame();
+      }
+    }
 
-      let offset: number = (<any>el)[getClientStartKey(axis)] || 0;
-      const offsetKey: string = getOffsetStartKey(axis);
-      do
-        offset += (<any>el)[offsetKey] || 0;
-      while (el = <HTMLElement>el.offsetParent);
-      return offset;
+    private updateScrollParent() {
+      const prev = this.scrollParent;
+      this.scrollParent = this.getScrollParent();
+      if (prev === this.scrollParent) return;
+      if (prev)
+        jQuery(prev).unbind('scroll', this.updateFrame);
+
+      jQuery(this.scrollParent).bind('scroll', this.updateFrame);
     }
 
     private getScrollParent(): HTMLElement {
@@ -184,6 +194,17 @@ module JReactComponents {
         }
       }
       return <any>window;
+    }
+
+    private getOffset(el: HTMLElement) {
+      const {axis} = this.props;
+
+      let offset: number = (<any>el)[getClientStartKey(axis)] || 0;
+      const offsetKey: string = getOffsetStartKey(axis);
+      do
+        offset += (<any>el)[offsetKey] || 0;
+      while (el = <HTMLElement>el.offsetParent);
+      return offset;
     }
 
     private getScroll() {
@@ -206,7 +227,6 @@ module JReactComponents {
     private setScroll(offset: number) {
       const {scrollParent} = this;
       const {axis} = this.props;
-      //offset += this.getOffset(findDOMNode(this));
       offset += this.getOffset(this.getElement().get(0));
       if (<any>scrollParent === window) return window.scrollTo(0, offset);
 
@@ -241,25 +261,7 @@ module JReactComponents {
       return { start, end };
     }
 
-    private updateFrame(eventObject?: JQueryEventObject) {
-      this.updateScrollParent();
-      switch (this.props.listType) {
-        case ListType.variable: return this.updateVariableFrame(eventObject);
-        case ListType.uniform: return this.updateUniformFrame(eventObject);
-      }
-    }
-
-    private updateScrollParent() {
-      const prev = this.scrollParent;
-      this.scrollParent = this.getScrollParent();
-      if (prev === this.scrollParent) return;
-      if (prev)
-        jQuery(prev).unbind('scroll', this.updateFrame);
-
-      jQuery(this.scrollParent).bind('scroll', this.updateFrame);
-    }
-
-    private updateVariableFrame(eventObject: JQueryEventObject) {
+    private updateVariableFrame() {
       if (!this.props.itemSizeGetter) this.cacheSizes();
 
       const {start, end} = this.getStartAndEnd();
@@ -291,12 +293,15 @@ module JReactComponents {
       this.dispatch(new JReact.Action(ListActionType.UPDATE, { fromIndex, size }));
     }
 
+    private getChildrenFromContainer() {
+      return JReact.getInstance(JReact.getInstance(this.refs[ITEMS_CONTAINER]).refs[ITEMS_TRANSLATE]).refs[ITEMS_REFERENCE][0].children;;
+    }
+
     private cacheSizes() {
       const {cache} = this;
       const {fromIndex} = this.state;
-      //const itemEls = findDOMNode(this.items).children;
-      //const itemEls = this.refs[ITEMS_REFERENCE].get(0).children;
-      const itemEls = this.items.element[0].children;
+
+      const itemEls = this.getChildrenFromContainer();
 
       const sizeKey = getOffsetSizeKey(this.props.axis);
       for (let i = 0, l = itemEls.length; i < l; ++i) {
@@ -304,9 +309,8 @@ module JReactComponents {
       }
     }
 
-    private updateUniformFrame(eventObject: JQueryEventObject) {
+    private updateUniformFrame() {
       let {itemSize, itemsPerRow} = this.getItemSizeAndItemsPerRow();
-      //if (!itemSize || !itemsPerRow) return cb();
       const {start, end} = this.getStartAndEnd();
       const {fromIndex, size} = this.constrain(
         Math.floor(start / itemSize) * itemsPerRow,
@@ -324,10 +328,8 @@ module JReactComponents {
       if (useStaticSize && itemSize && itemsPerRow) {
         return { itemSize, itemsPerRow };
       }
-      
-      //const itemEls = findDOMNode(this.items).children;
-      //const itemEls = this.items.element[0].children;
-      const itemEls = JReact.getInstance(JReact.getInstance(this.refs[ITEMS_CONTAINER]).refs[ITEMS_TRANSLATE]).refs[ITEMS_REFERENCE][0].children;
+
+      const itemEls = this.getChildrenFromContainer();
 
       if (!itemEls.length) return {};
 
@@ -379,7 +381,7 @@ module JReactComponents {
     }
 
     private getSizeOf(index: number) {
-      const {cache, items} = this;
+      const {cache} = this;
       const {axis, itemSizeGetter, itemSizeEstimator, listType} = this.props;
       const {fromIndex, itemSize, size} = this.state;
       
@@ -420,7 +422,7 @@ module JReactComponents {
       const {fromIndex, size} = this.state;
       const items: JReact.ComponentArray = [];
       for (let i = 0; i < size; ++i) items.push(itemRenderer(fromIndex + i, i));
-      return this.items = itemsRenderer(items, ITEMS_REFERENCE);
+      return itemsRenderer(items, ITEMS_REFERENCE);
     }
 
     public render() {

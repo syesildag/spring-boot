@@ -19,7 +19,7 @@ module JReactComponents {
       super(props);
     }
 
-    itemRenderer(index: number, key: JReact.Key) {
+    protected itemRenderer(index: number, key: JReact.Key) {
       return JReact.createElement(
         'div',
         { key },
@@ -27,7 +27,7 @@ module JReactComponents {
         );
     }
 
-    itemsRenderer(items: JReact.ComponentArray, ref: string) {
+    protected itemsRenderer(items: JReact.ComponentArray, ref: string) {
       return JReact.createElement(
         'div',
         { ref },
@@ -40,17 +40,17 @@ module JReactComponents {
       return JReact.createElement(
         'div',
         { style: { overflow: 'auto', maxHeight: 100 } },
-        JReact.createElement(
+        JReact.createElement<ListProps, List>(
           List,
           {
             axis: Axis.y,
             listType: ListType.uniform,
             useStaticSize: false,
-            useTranslate3d: false,
+            useTranslate3d: true,
             pageSize: 10,
             threshold: 20,
-            itemRenderer: this.itemRenderer.bind(this),
-            itemsRenderer: this.itemsRenderer.bind(this),
+            itemRenderer: this.itemRenderer,
+            itemsRenderer: this.itemsRenderer,
             length: 100
           }
           ));
