@@ -6,11 +6,9 @@ module JReactComponents {
   }
 
   enum MyListActionType {
-    UPDATE_SIZE
   }
 
   interface MyListActionPayload {
-    size?: number
   }
 
   export class MyList extends JReact.Component<MyListProps, ListState, MyListActionType, MyListActionPayload> {

@@ -161,7 +161,7 @@ module JReactComponents {
       jQuery(this.scrollParent).unbind('scroll', this.updateFrame);
     }
 
-    private updateFrame(eventObject?: JQueryEventObject) {
+    private updateFrame() {
       this.updateScrollParent();
       switch (this.props.listType) {
         case ListType.variable: return this.updateVariableFrame();
@@ -182,7 +182,6 @@ module JReactComponents {
     private getScrollParent(): HTMLElement {
       const {axis, scrollParentGetter} = this.props;
       if (scrollParentGetter) return scrollParentGetter();
-      //let el = findDOMNode(this);
       let el = this.getElement().get(0);
       const overflowKey = getOverflowKey(axis);
       while (el = el.parentElement) {
@@ -219,7 +218,6 @@ module JReactComponents {
         (<any>scrollParent)[scrollKey];
       const max = this.getScrollSize() - this.getViewportSize();
       const scroll = Math.max(0, Math.min(actual, max));
-      //const el = findDOMNode(this);
       const el = this.getElement().get(0);
       return this.getOffset(scrollParent) + scroll - this.getOffset(el);
     }
@@ -255,9 +253,8 @@ module JReactComponents {
       const scroll = this.getScroll();
       const start = Math.max(0, scroll - threshold);
       let end = scroll + this.getViewportSize() + threshold;
-      if (listType === ListType.uniform || itemSizeGetter) {
+      if (listType === ListType.uniform || itemSizeGetter)
         end = Math.min(end, this.getSpaceBefore(length));
-      }
       return { start, end };
     }
 
@@ -360,9 +357,8 @@ module JReactComponents {
       
       // Try the static itemSize.
       const {itemSize, itemsPerRow} = this.state;
-      if (itemSize) {
+      if (itemSize)
         return cache[index] = Math.floor(index / itemsPerRow) * itemSize;
-      }
       
       // Find the closest space to index there is a cached value for.
       let fromIndex = index;

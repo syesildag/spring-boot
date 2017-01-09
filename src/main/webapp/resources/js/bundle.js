@@ -4,6 +4,175 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /// <reference path="../typings/tsd.d.ts"/>
+var Serkan;
+(function (Serkan) {
+    'use strict';
+    Serkan.ENTER_KEY = 13;
+    Serkan.ESCAPE_KEY = 27;
+    Serkan.KEY_CODE = {
+        ENTER: 13,
+        ESCAPE: 27,
+        SPACE: 32,
+        LEFT_ARROW: 37,
+        UP_ARROW: 38,
+        RIGHT_ARROW: 39,
+        DOWN_ARROW: 40
+    };
+    Serkan.FREEZER_TODOS = 'freezerTodos';
+    Serkan.LAG = 500;
+    (function (Status) {
+        Status[Status["EDITING"] = 0] = "EDITING";
+        Status[Status["READY"] = 1] = "READY";
+        Status[Status["LOADING"] = 2] = "LOADING";
+        Status[Status["DELETING"] = 3] = "DELETING";
+        Status[Status["UPDATING"] = 4] = "UPDATING";
+    })(Serkan.Status || (Serkan.Status = {}));
+    var Status = Serkan.Status;
+    ;
+    (function (Filter) {
+        Filter[Filter["ALL"] = 0] = "ALL";
+        Filter[Filter["COMPLETED"] = 1] = "COMPLETED";
+        Filter[Filter["ACTIVE"] = 2] = "ACTIVE";
+    })(Serkan.Filter || (Serkan.Filter = {}));
+    var Filter = Serkan.Filter;
+    ;
+    var Counter = (function (_super) {
+        __extends(Counter, _super);
+        function Counter(props, context) {
+            _super.call(this, props, context);
+            debugger;
+            this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
+        }
+        Counter.prototype.handleClick = function () {
+            var _this = this;
+            var p = new Promise(function (resolve, reject) {
+                setTimeout(function (cc) {
+                    this.setState({ clickCount: cc + 1 });
+                    resolve('finished handleClick...');
+                }.bind(_this), 500, _this.state.clickCount);
+            });
+            console.log('clicked...');
+            p.then(function (s) { console.log("resolve: " + s); })
+                .catch(function (e) { console.log("reject: " + JSON.stringify(e)); });
+        };
+        Counter.prototype.componentWillMount = function () {
+            //Invoked once, both on the client and server, immediately before the initial rendering occurs.
+            //If you call setState within this method, render() will see the updated state and will be executed only once despite the state change.
+            debugger;
+            console.log('componentWillMount');
+        };
+        Counter.prototype.componentDidMount = function () {
+            //Invoked once, only on the client (not on the server), immediately after the initial rendering occurs.
+            //At this point in the lifecycle, you can access any refs to your children (e.g., to access the underlying DOM representation).
+            //The componentDidMount() method of child components is invoked before that of parent components.
+            //If you want to integrate with other JavaScript frameworks, set timers using setTimeout or setInterval, or send AJAX requests, perform those operations in this method.
+            debugger;
+            console.log('componentDidMount');
+        };
+        Counter.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
+            //Invoked when a component is receiving new props.
+            //This method is not called for the initial render.
+            //Use this as an opportunity to react to a prop transition before render() is called by updating the state using this.setState().
+            //The old props can be accessed via this.props. Calling this.setState() within this function will not trigger an additional render.
+            debugger;
+            console.log('componentWillReceiveProps ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextContext));
+        };
+        Counter.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
+            //Invoked before rendering when new props or state are being received.This method is not called for the initial render or when forceUpdate is used.
+            //Use this as an opportunity to return false when you're certain that the transition to the new props and state will not require a component update.
+            //If shouldComponentUpdate returns false, then render() will be completely skipped until the next state change.In addition, componentWillUpdate and componentDidUpdate will not be called.
+            //By default, shouldComponentUpdate always returns true to prevent subtle bugs when state is mutated in place, but if you are careful to always treat state as immutable and to read only from props and state in render() then you can override shouldComponentUpdate with an implementation that compares the old props and state to their replacements.
+            //If performance is a bottleneck, especially with dozens or hundreds of components, use shouldComponentUpdate to speed up your app.
+            debugger;
+            console.log('shouldComponentUpdate ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextState) + '-' + JSON.stringify(nextContext));
+            return nextState.clickCount < 11;
+        };
+        Counter.prototype.componentWillUpdate = function (nextProps, nextState, nextContext) {
+            //Invoked immediately before rendering when new props or state are being received. This method is not called for the initial render.
+            //Use this as an opportunity to perform preparation before an update occurs.
+            debugger;
+            console.log('componentWillUpdate ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextState) + '-' + JSON.stringify(nextContext));
+        };
+        Counter.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
+            //Invoked immediately after the component's updates are flushed to the DOM. This method is not called for the initial render.
+            //Use this as an opportunity to operate on the DOM when the component has been updated.
+            debugger;
+            console.log('componentDidUpdate ' + JSON.stringify(prevProps) + '-' + JSON.stringify(prevState) + '-' + JSON.stringify(prevContext));
+        };
+        Counter.prototype.componentWillUnmount = function () {
+            //Invoked immediately before a component is unmounted from the DOM.
+            //Perform any necessary cleanup in this method, such as invalidating timers or cleaning up any DOM elements that were created in componentDidMount.
+            debugger;
+            console.log('componentWillUnmount');
+        };
+        Counter.prototype.render = function () {
+            //      return (
+            //        <h2 className="xxx" onClick={this.handleClick.bind(this)}>
+            //          <span>
+            //            Click me! Number of clicks: {this.state.clickCount}
+            //          </span>
+            //          <svg width="30" height="30">
+            //            <circle r={10 + this.state.clickCount} cx="15" cy = "15" />
+            //          </svg>
+            //        </h2>
+            //      );
+            debugger;
+            return React.DOM.h2({ className: 'xxx', onClick: this.handleClick.bind(this) }, React.DOM.span({}, 'Click me! Number of clicks: ' + this.state.clickCount), React.DOM.svg({ width: 30, height: 30 }, React.DOM.circle({ r: 10 + this.state.clickCount, cx: 15, cy: 15 })));
+            //React.DOM.span({ dangerouslySetInnerHTML: { __html: React.renderToString(React.DOM.svg({ width: 30, height: 30 }, React.DOM.circle({ r: 10 + this.state.clickCount, cx: 15, cy: 15 }))) } }));
+        };
+        return Counter;
+    }(React.Component));
+    Serkan.Counter = Counter;
+})(Serkan || (Serkan = {}));
+/// <reference path="../typings/react/react.d.ts"/>
+/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
+/// <reference path="./counter.ts"/>
+var Serkan;
+(function (Serkan) {
+    var TodoFooter = (function (_super) {
+        __extends(TodoFooter, _super);
+        function TodoFooter(props, context) {
+            _super.call(this, props, context);
+            //this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
+        }
+        TodoFooter.prototype.handleClearCompleted = function () {
+            State.trigger('todo:clearCompleted');
+        };
+        TodoFooter.prototype.handleFilter = function (filter) {
+            return function (e) {
+                e.preventDefault();
+                State.trigger('todo:filter', filter);
+            };
+        };
+        TodoFooter.prototype.render = function () {
+            var activeTodoWord = Utils.pluralize(this.props.count, 'item'), nowShowing = this.props.nowShowing, clearButton = null, allClass = nowShowing == Serkan.Filter.ALL ? 'selected' : '', activeClass = nowShowing == Serkan.Filter.ACTIVE ? 'selected' : '', completedClass = nowShowing == Serkan.Filter.COMPLETED ? 'selected' : '';
+            if (this.props.completedCount > 0) {
+                clearButton = React.DOM.button({
+                    className: 'clear-completed',
+                    onClick: this.handleClearCompleted.bind(this)
+                }, 'Clear completed');
+            }
+            return React.DOM.footer({
+                className: 'footer'
+            }, React.DOM.span({ className: 'todo-count' }, this.props.count + ' ' + activeTodoWord + ' left'), React.DOM.ul({ className: 'filters' }, React.DOM.li(null, React.DOM.a({
+                href: "#",
+                className: 'allClass',
+                onClick: this.handleFilter('all').bind(this)
+            }, 'All')), React.DOM.li(null, React.DOM.a({
+                href: "#",
+                className: 'activeClass',
+                onClick: this.handleFilter('active').bind(this)
+            }, 'Active')), React.DOM.li(null, React.DOM.a({
+                href: "#",
+                className: 'completedClass',
+                onClick: this.handleFilter('completed').bind(this)
+            }, 'Completed'))), clearButton);
+        };
+        return TodoFooter;
+    }(React.Component));
+    Serkan.TodoFooter = TodoFooter;
+})(Serkan || (Serkan = {}));
+/// <reference path="../typings/tsd.d.ts"/>
 var JReact;
 (function (JReact) {
     'use strict';
@@ -377,226 +546,6 @@ var JReact;
 /// <reference path="../typings/tsd.d.ts"/>
 var JReactComponents;
 (function (JReactComponents) {
-    var MyGridListActionType;
-    (function (MyGridListActionType) {
-        MyGridListActionType[MyGridListActionType["UPDATE_SIZE"] = 0] = "UPDATE_SIZE";
-    })(MyGridListActionType || (MyGridListActionType = {}));
-    var MyGridList = (function (_super) {
-        __extends(MyGridList, _super);
-        function MyGridList(props) {
-            _super.call(this, props);
-            this.itemRenderer = this.itemRenderer.bind(this);
-            this.itemsRenderer = this.itemsRenderer.bind(this);
-        }
-        MyGridList.prototype.itemsRenderer = function (items, ref) {
-            return JReact.createElement.apply(JReact, ['div', { ref: ref }].concat(items));
-        };
-        MyGridList.prototype.itemRenderer = function (row, key) {
-            var XLENGTH = 100, style = { display: "inline-block", width: "100px" };
-            return JReact.createElement(JReactComponents.List, {
-                axis: JReactComponents.Axis.x,
-                key: key,
-                pageSize: 10,
-                threshold: 20,
-                listType: JReactComponents.ListType.uniform,
-                itemsRenderer: this.itemsRenderer,
-                itemRenderer: function (col, key) { return JReact.createElement('div', { key: key, style: style }, 'x' + (col + (XLENGTH * row)) + 'x'); },
-                length: XLENGTH
-            });
-        };
-        MyGridList.prototype.render = function () {
-            return JReact.createElement('div', { style: { overflow: 'auto', maxHeight: 100 } }, 
-            //GRID
-            JReact.createElement(JReactComponents.List, {
-                axis: JReactComponents.Axis.y,
-                key: 1,
-                pageSize: 10,
-                threshold: 20,
-                listType: JReactComponents.ListType.uniform,
-                useStaticSize: false,
-                useTranslate3d: true,
-                itemsRenderer: this.itemsRenderer,
-                itemRenderer: this.itemRenderer,
-                length: 100
-            }));
-        };
-        return MyGridList;
-    }(JReact.Component));
-    JReactComponents.MyGridList = MyGridList;
-})(JReactComponents || (JReactComponents = {}));
-/// <reference path="../typings/tsd.d.ts"/>
-var Serkan;
-(function (Serkan) {
-    'use strict';
-    Serkan.ENTER_KEY = 13;
-    Serkan.ESCAPE_KEY = 27;
-    Serkan.KEY_CODE = {
-        ENTER: 13,
-        ESCAPE: 27,
-        SPACE: 32,
-        LEFT_ARROW: 37,
-        UP_ARROW: 38,
-        RIGHT_ARROW: 39,
-        DOWN_ARROW: 40
-    };
-    Serkan.FREEZER_TODOS = 'freezerTodos';
-    Serkan.LAG = 500;
-    (function (Status) {
-        Status[Status["EDITING"] = 0] = "EDITING";
-        Status[Status["READY"] = 1] = "READY";
-        Status[Status["LOADING"] = 2] = "LOADING";
-        Status[Status["DELETING"] = 3] = "DELETING";
-        Status[Status["UPDATING"] = 4] = "UPDATING";
-    })(Serkan.Status || (Serkan.Status = {}));
-    var Status = Serkan.Status;
-    ;
-    (function (Filter) {
-        Filter[Filter["ALL"] = 0] = "ALL";
-        Filter[Filter["COMPLETED"] = 1] = "COMPLETED";
-        Filter[Filter["ACTIVE"] = 2] = "ACTIVE";
-    })(Serkan.Filter || (Serkan.Filter = {}));
-    var Filter = Serkan.Filter;
-    ;
-    var Counter = (function (_super) {
-        __extends(Counter, _super);
-        function Counter(props, context) {
-            _super.call(this, props, context);
-            debugger;
-            this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
-        }
-        Counter.prototype.handleClick = function () {
-            var _this = this;
-            var p = new Promise(function (resolve, reject) {
-                setTimeout(function (cc) {
-                    this.setState({ clickCount: cc + 1 });
-                    resolve('finished handleClick...');
-                }.bind(_this), 500, _this.state.clickCount);
-            });
-            console.log('clicked...');
-            p.then(function (s) { console.log("resolve: " + s); })
-                .catch(function (e) { console.log("reject: " + JSON.stringify(e)); });
-        };
-        Counter.prototype.componentWillMount = function () {
-            //Invoked once, both on the client and server, immediately before the initial rendering occurs.
-            //If you call setState within this method, render() will see the updated state and will be executed only once despite the state change.
-            debugger;
-            console.log('componentWillMount');
-        };
-        Counter.prototype.componentDidMount = function () {
-            //Invoked once, only on the client (not on the server), immediately after the initial rendering occurs.
-            //At this point in the lifecycle, you can access any refs to your children (e.g., to access the underlying DOM representation).
-            //The componentDidMount() method of child components is invoked before that of parent components.
-            //If you want to integrate with other JavaScript frameworks, set timers using setTimeout or setInterval, or send AJAX requests, perform those operations in this method.
-            debugger;
-            console.log('componentDidMount');
-        };
-        Counter.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
-            //Invoked when a component is receiving new props.
-            //This method is not called for the initial render.
-            //Use this as an opportunity to react to a prop transition before render() is called by updating the state using this.setState().
-            //The old props can be accessed via this.props. Calling this.setState() within this function will not trigger an additional render.
-            debugger;
-            console.log('componentWillReceiveProps ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextContext));
-        };
-        Counter.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
-            //Invoked before rendering when new props or state are being received.This method is not called for the initial render or when forceUpdate is used.
-            //Use this as an opportunity to return false when you're certain that the transition to the new props and state will not require a component update.
-            //If shouldComponentUpdate returns false, then render() will be completely skipped until the next state change.In addition, componentWillUpdate and componentDidUpdate will not be called.
-            //By default, shouldComponentUpdate always returns true to prevent subtle bugs when state is mutated in place, but if you are careful to always treat state as immutable and to read only from props and state in render() then you can override shouldComponentUpdate with an implementation that compares the old props and state to their replacements.
-            //If performance is a bottleneck, especially with dozens or hundreds of components, use shouldComponentUpdate to speed up your app.
-            debugger;
-            console.log('shouldComponentUpdate ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextState) + '-' + JSON.stringify(nextContext));
-            return nextState.clickCount < 11;
-        };
-        Counter.prototype.componentWillUpdate = function (nextProps, nextState, nextContext) {
-            //Invoked immediately before rendering when new props or state are being received. This method is not called for the initial render.
-            //Use this as an opportunity to perform preparation before an update occurs.
-            debugger;
-            console.log('componentWillUpdate ' + JSON.stringify(nextProps) + '-' + JSON.stringify(nextState) + '-' + JSON.stringify(nextContext));
-        };
-        Counter.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
-            //Invoked immediately after the component's updates are flushed to the DOM. This method is not called for the initial render.
-            //Use this as an opportunity to operate on the DOM when the component has been updated.
-            debugger;
-            console.log('componentDidUpdate ' + JSON.stringify(prevProps) + '-' + JSON.stringify(prevState) + '-' + JSON.stringify(prevContext));
-        };
-        Counter.prototype.componentWillUnmount = function () {
-            //Invoked immediately before a component is unmounted from the DOM.
-            //Perform any necessary cleanup in this method, such as invalidating timers or cleaning up any DOM elements that were created in componentDidMount.
-            debugger;
-            console.log('componentWillUnmount');
-        };
-        Counter.prototype.render = function () {
-            //      return (
-            //        <h2 className="xxx" onClick={this.handleClick.bind(this)}>
-            //          <span>
-            //            Click me! Number of clicks: {this.state.clickCount}
-            //          </span>
-            //          <svg width="30" height="30">
-            //            <circle r={10 + this.state.clickCount} cx="15" cy = "15" />
-            //          </svg>
-            //        </h2>
-            //      );
-            debugger;
-            return React.DOM.h2({ className: 'xxx', onClick: this.handleClick.bind(this) }, React.DOM.span({}, 'Click me! Number of clicks: ' + this.state.clickCount), React.DOM.svg({ width: 30, height: 30 }, React.DOM.circle({ r: 10 + this.state.clickCount, cx: 15, cy: 15 })));
-            //React.DOM.span({ dangerouslySetInnerHTML: { __html: React.renderToString(React.DOM.svg({ width: 30, height: 30 }, React.DOM.circle({ r: 10 + this.state.clickCount, cx: 15, cy: 15 }))) } }));
-        };
-        return Counter;
-    }(React.Component));
-    Serkan.Counter = Counter;
-})(Serkan || (Serkan = {}));
-/// <reference path="../typings/react/react.d.ts"/>
-/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
-/// <reference path="./counter.ts"/>
-var Serkan;
-(function (Serkan) {
-    var TodoFooter = (function (_super) {
-        __extends(TodoFooter, _super);
-        function TodoFooter(props, context) {
-            _super.call(this, props, context);
-            //this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
-        }
-        TodoFooter.prototype.handleClearCompleted = function () {
-            State.trigger('todo:clearCompleted');
-        };
-        TodoFooter.prototype.handleFilter = function (filter) {
-            return function (e) {
-                e.preventDefault();
-                State.trigger('todo:filter', filter);
-            };
-        };
-        TodoFooter.prototype.render = function () {
-            var activeTodoWord = Utils.pluralize(this.props.count, 'item'), nowShowing = this.props.nowShowing, clearButton = null, allClass = nowShowing == Serkan.Filter.ALL ? 'selected' : '', activeClass = nowShowing == Serkan.Filter.ACTIVE ? 'selected' : '', completedClass = nowShowing == Serkan.Filter.COMPLETED ? 'selected' : '';
-            if (this.props.completedCount > 0) {
-                clearButton = React.DOM.button({
-                    className: 'clear-completed',
-                    onClick: this.handleClearCompleted.bind(this)
-                }, 'Clear completed');
-            }
-            return React.DOM.footer({
-                className: 'footer'
-            }, React.DOM.span({ className: 'todo-count' }, this.props.count + ' ' + activeTodoWord + ' left'), React.DOM.ul({ className: 'filters' }, React.DOM.li(null, React.DOM.a({
-                href: "#",
-                className: 'allClass',
-                onClick: this.handleFilter('all').bind(this)
-            }, 'All')), React.DOM.li(null, React.DOM.a({
-                href: "#",
-                className: 'activeClass',
-                onClick: this.handleFilter('active').bind(this)
-            }, 'Active')), React.DOM.li(null, React.DOM.a({
-                href: "#",
-                className: 'completedClass',
-                onClick: this.handleFilter('completed').bind(this)
-            }, 'Completed'))), clearButton);
-        };
-        return TodoFooter;
-    }(React.Component));
-    Serkan.TodoFooter = TodoFooter;
-})(Serkan || (Serkan = {}));
-/// <reference path="./jreact.ts"/>
-/// <reference path="../typings/tsd.d.ts"/>
-var JReactComponents;
-(function (JReactComponents) {
     var CounterActionType;
     (function (CounterActionType) {
         CounterActionType[CounterActionType["INCREMENT"] = 0] = "INCREMENT";
@@ -678,7 +627,6 @@ var JReactComponents;
 (function (JReactComponents) {
     var MyListActionType;
     (function (MyListActionType) {
-        MyListActionType[MyListActionType["UPDATE_SIZE"] = 0] = "UPDATE_SIZE";
     })(MyListActionType || (MyListActionType = {}));
     var MyList = (function (_super) {
         __extends(MyList, _super);
@@ -708,186 +656,101 @@ var JReactComponents;
     }(JReact.Component));
     JReactComponents.MyList = MyList;
 })(JReactComponents || (JReactComponents = {}));
+/// <reference path="../typings/react/react.d.ts"/>
+/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
+/// <reference path="./counter.ts"/>
+var Serkan;
+(function (Serkan) {
+    var TodoItem = (function (_super) {
+        __extends(TodoItem, _super);
+        function TodoItem(props, context) {
+            _super.call(this, props, context);
+            this.state = { editText: this.props.todo.title };
+        }
+        TodoItem.prototype.handleUpdate = function () {
+            var todo = this.props.todo;
+            State.trigger('todo:update', todo, todo.ui.input);
+        };
+        TodoItem.prototype.handleEdit = function () {
+            this.props.todo.ui.set({ status: Serkan.Status.EDITING });
+        };
+        TodoItem.prototype.handleKeyDown = function (event) {
+            if (event.which === Serkan.ESCAPE_KEY) {
+                this.props.todo.ui.set({ status: Serkan.Status.READY });
+            }
+            else if (event.which === Serkan.ENTER_KEY) {
+                this.handleUpdate();
+            }
+        };
+        TodoItem.prototype.handleChange = function (event) {
+            this.props.todo.ui.set({ input: event.target.value }).now();
+        };
+        TodoItem.prototype.handleToggle = function () {
+            State.trigger('todo:toggle', this.props.todo);
+        };
+        TodoItem.prototype.handleDelete = function () {
+            State.trigger('todo:delete', this.props.todo);
+        };
+        /**
+         * Safely manipulate the DOM after updating the state when invoking
+         * `this.props.onEdit()` in the `handleEdit` method above.
+         * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
+         * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
+         */
+        TodoItem.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
+            var status = this.props.todo.ui.status;
+            if (prevProps.todo.ui.status != status && status == Serkan.Status.EDITING) {
+                this.editField.focus();
+                this.editField.setSelectionRange(this.editField.value.length, this.editField.value.length);
+            }
+        };
+        TodoItem.prototype.render = function () {
+            var _this = this;
+            var todo = this.props.todo, className = Serkan.Status[todo.ui.status].toLowerCase(), content = null;
+            if (todo.model.completed)
+                className += ' completed';
+            if ([Serkan.Status.EDITING, Serkan.Status.UPDATING].indexOf(todo.ui.status) != -1) {
+                content = React.DOM.div({ className: 'editingTodo' }, React.DOM.input({
+                    ref: function (c) { return _this.editField = c; },
+                    className: 'edit',
+                    value: todo.ui.input,
+                    onBlur: this.handleUpdate.bind(this),
+                    onChange: this.handleChange.bind(this),
+                    onKeyDown: this.handleKeyDown.bind(this)
+                }), React.DOM.span({ className: 'loadingMessage' }, 'Saving...'));
+            }
+            else {
+                content = React.DOM.div({ className: 'view' }, React.DOM.input({
+                    type: 'checkbox',
+                    className: 'toggle',
+                    checked: todo.model.completed,
+                    onChange: this.handleToggle.bind(this)
+                }), React.DOM.label({ onDoubleClick: this.handleEdit.bind(this) }, todo.model.title), React.DOM.button({ className: 'destroy', onClick: this.handleDelete.bind(this) }), React.DOM.span({ className: 'loadingMessage' }, 'Deleting...'));
+            }
+            return React.DOM.li({ className: className }, content);
+        };
+        return TodoItem;
+    }(React.Component));
+    Serkan.TodoItem = TodoItem;
+})(Serkan || (Serkan = {}));
 /// <reference path="./jreact.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
 var JReactComponents;
 (function (JReactComponents) {
-    var AbstractBaseWidget = (function (_super) {
-        __extends(AbstractBaseWidget, _super);
-        function AbstractBaseWidget(props) {
+    var Template = (function (_super) {
+        __extends(Template, _super);
+        function Template(props) {
             _super.call(this, props);
-            this.CONTAINER = 'jreact-widget-' + this.getWidgetName() + '-container';
         }
-        AbstractBaseWidget.prototype.getWidgetName = function () {
-            throw new Error('should override widget name');
+        Template.prototype.onClick = function (e) {
+            alert(this.props.label);
         };
-        AbstractBaseWidget.prototype.getContainer = function () {
-            return JReact.createElement.bind(null, 'span');
+        Template.prototype.componentDidMount = function () {
+            this.getElement().find('[name=' + this.props.name + ']').click(this.onClick.bind(this));
         };
-        AbstractBaseWidget.prototype.getContainerProps = function () {
-            return {};
-        };
-        AbstractBaseWidget.prototype.shouldComponentUpdate = function (nextProps, nextState) {
-            var update = !JReact.isSame(this.props.widgetOptions, nextProps.widgetOptions) || !JReact.isSame(this.state, nextState);
-            if (!update && this.props.children !== nextProps.children) {
-                update = (this.props.children != null && nextProps.children == null)
-                    || (this.props.children == null && nextProps.children != null)
-                    || (this.props.children != null && nextProps.children != null
-                        && (this.props.children.length !== nextProps.children.length
-                            || this.props.children.some(function (child, idx) {
-                                var nextChild = nextProps.children[idx], same = (JReact.isStringOrNumber(child) && JReact.isStringOrNumber(nextChild) && child == nextChild)
-                                    || ((child instanceof JReact.Component)
-                                        && (nextChild instanceof JReact.Component)
-                                        && child.constructor.name === nextChild.constructor.name
-                                        && !child.shouldComponentUpdate(nextChild.props, nextChild.state));
-                                return !same;
-                            })));
-            }
-            if (!update) {
-                this.props = nextProps;
-                this.state = nextState;
-            }
-            return update;
-        };
-        AbstractBaseWidget.prototype.componentWillReceiveProps = function (nextProps) {
-            this.componentWillUnmount();
-        };
-        AbstractBaseWidget.prototype.render = function () {
-            return this.getContainer().apply(void 0, [jQuery.extend({
-                className: this.CONTAINER,
-                ref: this.CONTAINER
-            }, this.getContainerProps())].concat(this.props.children));
-        };
-        return AbstractBaseWidget;
+        return Template;
     }(JReact.Component));
-    JReactComponents.AbstractBaseWidget = AbstractBaseWidget;
-    var AbstractWidget = (function (_super) {
-        __extends(AbstractWidget, _super);
-        function AbstractWidget(props) {
-            _super.call(this, props);
-        }
-        AbstractWidget.prototype.componentDidMount = function () {
-            this.refs[this.CONTAINER][this.getWidgetName()](this.props.widgetOptions || {});
-        };
-        AbstractWidget.prototype.componentWillUnmount = function () {
-            this.refs[this.CONTAINER][this.getWidgetName()]('destroy');
-        };
-        AbstractWidget.prototype.componentDidUpdate = function () {
-            this.refs[this.CONTAINER][this.getWidgetName()](this.props.widgetOptions || {});
-        };
-        return AbstractWidget;
-    }(AbstractBaseWidget));
-    JReactComponents.AbstractWidget = AbstractWidget;
-    var Resizable = (function (_super) {
-        __extends(Resizable, _super);
-        function Resizable(props) {
-            _super.call(this, props);
-        }
-        Resizable.prototype.getWidgetName = function () {
-            return 'resizable';
-        };
-        Resizable.prototype.getContainer = function () {
-            return JReact.createElement.bind(null, 'div');
-        };
-        Resizable.prototype.onResizeStop = function (ui) {
-            this.state = ui.size;
-        };
-        Resizable.prototype.getDefaultProps = function () {
-            return {
-                widgetOptions: {
-                    grid: [1, 1],
-                    stop: function (e, ui) {
-                        JReact.getInstance(jQuery(e.target).parent()).onResizeStop(ui);
-                    }
-                }
-            };
-        };
-        Resizable.prototype.getContainerProps = function () {
-            if (this.state)
-                return {
-                    style: {
-                        width: this.state.width,
-                        height: this.state.height
-                    }
-                };
-            return _super.prototype.getContainerProps.call(this);
-        };
-        return Resizable;
-    }(AbstractWidget));
-    JReactComponents.Resizable = Resizable;
-    var Accordion = (function (_super) {
-        __extends(Accordion, _super);
-        function Accordion(props) {
-            _super.call(this, props);
-        }
-        Accordion.prototype.getWidgetName = function () {
-            return 'accordion';
-        };
-        return Accordion;
-    }(AbstractWidget));
-    JReactComponents.Accordion = Accordion;
-    var LongPress = (function (_super) {
-        __extends(LongPress, _super);
-        function LongPress(props) {
-            _super.call(this, props);
-        }
-        LongPress.prototype.getWidgetName = function () {
-            return 'longpress';
-        };
-        LongPress.prototype.getDefaultProps = function () {
-            return {
-                widgetOptions: {
-                    delay: 500,
-                    shortCallback: JReact.NOOP,
-                    longCallback: JReact.NOOP
-                }
-            };
-        };
-        LongPress.prototype.clearTimeout = function () {
-            clearTimeout(LongPress.timeout);
-            LongPress.timeout = null;
-        };
-        LongPress.prototype.onMouseDown = function (e) {
-            var _this = this;
-            if (e.button === 0)
-                LongPress.timeout = setTimeout(function () {
-                    _this.props.widgetOptions.longCallback.call(_this, e);
-                    LongPress.timeout = null;
-                }, this.props.widgetOptions.delay);
-        };
-        LongPress.prototype.onMouseUp = function (e) {
-            if (e.button === 0 && LongPress.timeout != null) {
-                this.clearTimeout();
-                this.props.widgetOptions.shortCallback.call(this, e);
-            }
-        };
-        LongPress.prototype.onMouseMove = function (e) {
-            if (LongPress.timeout != null)
-                this.clearTimeout();
-        };
-        //private onContextMenu(e: JQueryEventObject) {
-        //  if (this.timeout == null && e.type !== 'mouseup') {
-        //    this.props.widgetOptions.longCallback.call(this, e);
-        //    e.preventDefault();
-        //    e.stopPropagation();
-        //    return false;
-        //  }
-        //}
-        LongPress.prototype.getContainerProps = function () {
-            return {
-                //contextmenu: this.onContextMenu.bind(this),
-                mousedown: this.onMouseDown.bind(this),
-                mouseup: this.onMouseUp.bind(this),
-                mousemove: this.onMouseMove.bind(this),
-                touchstart: this.onMouseDown.bind(this),
-                touchend: this.onMouseUp.bind(this),
-                touchmove: this.onMouseMove.bind(this)
-            };
-        };
-        LongPress.timeout = null;
-        return LongPress;
-    }(AbstractBaseWidget));
-    JReactComponents.LongPress = LongPress;
+    JReactComponents.Template = Template;
 })(JReactComponents || (JReactComponents = {}));
 var Utils;
 (function (Utils) {
@@ -1141,557 +1004,6 @@ var Utils;
     }
     Utils.isPromiseLike = isPromiseLike;
 })(Utils || (Utils = {}));
-/// <reference path="./jreact.ts"/>
-/// <reference path="../typings/tsd.d.ts"/>
-var JReactComponents;
-(function (JReactComponents) {
-    var Todo = (function (_super) {
-        __extends(Todo, _super);
-        function Todo(props) {
-            _super.call(this, props);
-        }
-        Todo.prototype.componentDidMount = function () {
-            this.refs[Todo.TODO_DIV].effect('highlight');
-        };
-        Todo.prototype.componentDidUpdate = function () {
-            this.refs[Todo.TODO_DIV].effect('highlight');
-        };
-        Todo.prototype.render = function () {
-            var _a = this.props, todo = _a.todo, todoClick = _a.todoClick;
-            return JReact.createElement('div', {
-                className: Todo.TODO_DIV + (todo.selected ? ' selected' : ''),
-                style: {
-                    backgroundColor: 'beige'
-                },
-                ref: Todo.TODO_DIV,
-                click: function (e) {
-                    if (todoClick)
-                        todoClick.call(this, e, todo.message);
-                }
-            }, JReact.createElement('span', { className: 'todo-span', ref: 'todo-span' }, todo.message));
-        };
-        Todo.TODO_DIV = 'todo-div';
-        return Todo;
-    }(JReact.Component));
-    JReactComponents.Todo = Todo;
-})(JReactComponents || (JReactComponents = {}));
-/// <reference path="../typings/react/react.d.ts"/>
-/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
-/// <reference path="./counter.ts"/>
-var Serkan;
-(function (Serkan) {
-    var TodoItem = (function (_super) {
-        __extends(TodoItem, _super);
-        function TodoItem(props, context) {
-            _super.call(this, props, context);
-            this.state = { editText: this.props.todo.title };
-        }
-        TodoItem.prototype.handleUpdate = function () {
-            var todo = this.props.todo;
-            State.trigger('todo:update', todo, todo.ui.input);
-        };
-        TodoItem.prototype.handleEdit = function () {
-            this.props.todo.ui.set({ status: Serkan.Status.EDITING });
-        };
-        TodoItem.prototype.handleKeyDown = function (event) {
-            if (event.which === Serkan.ESCAPE_KEY) {
-                this.props.todo.ui.set({ status: Serkan.Status.READY });
-            }
-            else if (event.which === Serkan.ENTER_KEY) {
-                this.handleUpdate();
-            }
-        };
-        TodoItem.prototype.handleChange = function (event) {
-            this.props.todo.ui.set({ input: event.target.value }).now();
-        };
-        TodoItem.prototype.handleToggle = function () {
-            State.trigger('todo:toggle', this.props.todo);
-        };
-        TodoItem.prototype.handleDelete = function () {
-            State.trigger('todo:delete', this.props.todo);
-        };
-        /**
-         * Safely manipulate the DOM after updating the state when invoking
-         * `this.props.onEdit()` in the `handleEdit` method above.
-         * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
-         * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
-         */
-        TodoItem.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
-            var status = this.props.todo.ui.status;
-            if (prevProps.todo.ui.status != status && status == Serkan.Status.EDITING) {
-                this.editField.focus();
-                this.editField.setSelectionRange(this.editField.value.length, this.editField.value.length);
-            }
-        };
-        TodoItem.prototype.render = function () {
-            var _this = this;
-            var todo = this.props.todo, className = Serkan.Status[todo.ui.status].toLowerCase(), content = null;
-            if (todo.model.completed)
-                className += ' completed';
-            if ([Serkan.Status.EDITING, Serkan.Status.UPDATING].indexOf(todo.ui.status) != -1) {
-                content = React.DOM.div({ className: 'editingTodo' }, React.DOM.input({
-                    ref: function (c) { return _this.editField = c; },
-                    className: 'edit',
-                    value: todo.ui.input,
-                    onBlur: this.handleUpdate.bind(this),
-                    onChange: this.handleChange.bind(this),
-                    onKeyDown: this.handleKeyDown.bind(this)
-                }), React.DOM.span({ className: 'loadingMessage' }, 'Saving...'));
-            }
-            else {
-                content = React.DOM.div({ className: 'view' }, React.DOM.input({
-                    type: 'checkbox',
-                    className: 'toggle',
-                    checked: todo.model.completed,
-                    onChange: this.handleToggle.bind(this)
-                }), React.DOM.label({ onDoubleClick: this.handleEdit.bind(this) }, todo.model.title), React.DOM.button({ className: 'destroy', onClick: this.handleDelete.bind(this) }), React.DOM.span({ className: 'loadingMessage' }, 'Deleting...'));
-            }
-            return React.DOM.li({ className: className }, content);
-        };
-        return TodoItem;
-    }(React.Component));
-    Serkan.TodoItem = TodoItem;
-})(Serkan || (Serkan = {}));
-/// <reference path="./jreact.ts"/>
-/// <reference path="../typings/tsd.d.ts"/>
-var JReactComponents;
-(function (JReactComponents) {
-    var ITEMS_CONTAINER = 'items_container';
-    var ITEMS_TRANSLATE = 'items_translate';
-    var ITEMS_REFERENCE = 'items_reference';
-    function getClientStartKey(axis) {
-        return axis === Axis.x ? 'clientTop' : 'clientLeft';
-    }
-    function getClientSizeKey(axis) {
-        return axis === Axis.x ? 'clientWidth' : 'clientHeight';
-    }
-    function getInnerSizeKey(axis) {
-        return axis === Axis.x ? 'innerWidth' : 'innerHeight';
-    }
-    function getScrollSizeKey(axis) {
-        return axis === Axis.x ? 'scrollWidth' : 'scrollHeight';
-    }
-    function getScrollStartKey(axis) {
-        return axis === Axis.x ? 'scrollLeft' : 'scrollTop';
-    }
-    function getOffsetSizeKey(axis) {
-        return axis === Axis.x ? 'offsetWidth' : 'offsetHeight';
-    }
-    function getOffsetStartKey(axis) {
-        return axis === Axis.x ? 'offsetLeft' : 'offsetTop';
-    }
-    function getOverflowKey(axis) {
-        return axis === Axis.x ? 'overflowX' : 'overflowY';
-    }
-    function getSizeKey(axis) {
-        return axis === Axis.x ? 'width' : 'height';
-    }
-    (function (Axis) {
-        Axis[Axis["x"] = 0] = "x";
-        Axis[Axis["y"] = 1] = "y";
-    })(JReactComponents.Axis || (JReactComponents.Axis = {}));
-    var Axis = JReactComponents.Axis;
-    (function (ListType) {
-        ListType[ListType["uniform"] = 0] = "uniform";
-        ListType[ListType["variable"] = 1] = "variable";
-    })(JReactComponents.ListType || (JReactComponents.ListType = {}));
-    var ListType = JReactComponents.ListType;
-    var ListActionType;
-    (function (ListActionType) {
-        ListActionType[ListActionType["UPDATE"] = 0] = "UPDATE";
-    })(ListActionType || (ListActionType = {}));
-    var List = (function (_super) {
-        __extends(List, _super);
-        function List(props) {
-            _super.call(this, props);
-            var _a = this.props, initialIndex = _a.initialIndex, pageSize = _a.pageSize;
-            var itemsPerRow = 1;
-            var _b = this.constrain(initialIndex, pageSize, itemsPerRow, this.props), fromIndex = _b.fromIndex, size = _b.size;
-            this.state = { fromIndex: fromIndex, size: size, itemsPerRow: itemsPerRow };
-            this.cache = {};
-        }
-        List.prototype.getTag = function () {
-            return 'div';
-        };
-        List.prototype.update = function (field, action, actionField) {
-            if (field === void 0) { field = 1; }
-            switch (action.type) {
-                case ListActionType.UPDATE:
-                    if (typeof actionField === 'undefined')
-                        return field;
-                    else
-                        return actionField;
-                default:
-                    return field;
-            }
-        };
-        List.prototype.reduce = function (state, action) {
-            if (state === void 0) { state = {}; }
-            return {
-                itemsPerRow: this.update(state.itemsPerRow, action, action.payload.itemsPerRow),
-                fromIndex: this.update(state.fromIndex, action, action.payload.fromIndex),
-                itemSize: this.update(state.itemSize, action, action.payload.itemSize),
-                size: this.update(state.size, action, action.payload.size)
-            };
-        };
-        List.prototype.componentWillReceiveProps = function (nextProps) {
-            var _a = this.state, fromIndex = _a.fromIndex, size = _a.size, itemsPerRow = _a.itemsPerRow;
-            this.setState(this.constrain(fromIndex, size, itemsPerRow, nextProps));
-        };
-        List.prototype.componentDidMount = function () {
-            this.updateFrame = this.updateFrame.bind(this);
-            jQuery(window).bind('resize', this.updateFrame);
-            this.updateFrame();
-        };
-        List.prototype.componentDidUpdate = function () {
-            this.updateFrame();
-        };
-        List.prototype.componentWillUnmount = function () {
-            jQuery(window).unbind('resize', this.updateFrame);
-            jQuery(this.scrollParent).unbind('scroll', this.updateFrame);
-        };
-        List.prototype.updateFrame = function (eventObject) {
-            this.updateScrollParent();
-            switch (this.props.listType) {
-                case ListType.variable: return this.updateVariableFrame();
-                case ListType.uniform: return this.updateUniformFrame();
-            }
-        };
-        List.prototype.updateScrollParent = function () {
-            var prev = this.scrollParent;
-            this.scrollParent = this.getScrollParent();
-            if (prev === this.scrollParent)
-                return;
-            if (prev)
-                jQuery(prev).unbind('scroll', this.updateFrame);
-            jQuery(this.scrollParent).bind('scroll', this.updateFrame);
-        };
-        List.prototype.getScrollParent = function () {
-            var _a = this.props, axis = _a.axis, scrollParentGetter = _a.scrollParentGetter;
-            if (scrollParentGetter)
-                return scrollParentGetter();
-            //let el = findDOMNode(this);
-            var el = this.getElement().get(0);
-            var overflowKey = getOverflowKey(axis);
-            while (el = el.parentElement) {
-                switch (window.getComputedStyle(el)[overflowKey]) {
-                    case 'auto':
-                    case 'scroll':
-                    case 'overlay':
-                        return el;
-                }
-            }
-            return window;
-        };
-        List.prototype.getOffset = function (el) {
-            var axis = this.props.axis;
-            var offset = el[getClientStartKey(axis)] || 0;
-            var offsetKey = getOffsetStartKey(axis);
-            do
-                offset += el[offsetKey] || 0;
-            while (el = el.offsetParent);
-            return offset;
-        };
-        List.prototype.getScroll = function () {
-            var scrollParent = this.scrollParent;
-            var axis = this.props.axis;
-            var scrollKey = getScrollStartKey(axis);
-            var actual = scrollParent === window ?
-                // Firefox always returns document.body[scrollKey] as 0 and Chrome/Safari
-                // always return document.documentElement[scrollKey] as 0, so take
-                // whichever has a value.
-                document.body[scrollKey] || document.documentElement[scrollKey] :
-                scrollParent[scrollKey];
-            var max = this.getScrollSize() - this.getViewportSize();
-            var scroll = Math.max(0, Math.min(actual, max));
-            //const el = findDOMNode(this);
-            var el = this.getElement().get(0);
-            return this.getOffset(scrollParent) + scroll - this.getOffset(el);
-        };
-        List.prototype.setScroll = function (offset) {
-            var scrollParent = this.scrollParent;
-            var axis = this.props.axis;
-            offset += this.getOffset(this.getElement().get(0));
-            if (scrollParent === window)
-                return window.scrollTo(0, offset);
-            offset -= this.getOffset(this.scrollParent);
-            scrollParent[getScrollStartKey(axis)] = offset;
-        };
-        List.prototype.getViewportSize = function () {
-            var scrollParent = this.scrollParent;
-            var axis = this.props.axis;
-            return scrollParent === window ?
-                window[getInnerSizeKey(axis)] :
-                scrollParent[getClientSizeKey(axis)];
-        };
-        List.prototype.getScrollSize = function () {
-            var scrollParent = this.scrollParent;
-            var key = getScrollSizeKey(this.props.axis);
-            return scrollParent === window ?
-                Math.max(document.body[key], document.documentElement[key]) :
-                scrollParent[key];
-        };
-        List.prototype.getStartAndEnd = function (threshold) {
-            if (threshold === void 0) { threshold = this.props.threshold; }
-            var _a = this.props, itemSizeGetter = _a.itemSizeGetter, listType = _a.listType, length = _a.length;
-            var scroll = this.getScroll();
-            var start = Math.max(0, scroll - threshold);
-            var end = scroll + this.getViewportSize() + threshold;
-            if (listType === ListType.uniform || itemSizeGetter) {
-                end = Math.min(end, this.getSpaceBefore(length));
-            }
-            return { start: start, end: end };
-        };
-        List.prototype.updateVariableFrame = function () {
-            if (!this.props.itemSizeGetter)
-                this.cacheSizes();
-            var _a = this.getStartAndEnd(), start = _a.start, end = _a.end;
-            var _b = this.props, length = _b.length, pageSize = _b.pageSize;
-            var space = 0;
-            var fromIndex = 0;
-            var size = 0;
-            var maxFrom = length - 1;
-            while (fromIndex < maxFrom) {
-                var itemSize = this.getSizeOf(fromIndex);
-                if (itemSize == null || space + itemSize > start)
-                    break;
-                space += itemSize;
-                ++fromIndex;
-            }
-            var maxSize = length - fromIndex;
-            while (size < maxSize && space < end) {
-                var itemSize = this.getSizeOf(fromIndex + size);
-                if (itemSize == null) {
-                    size = Math.min(size + pageSize, maxSize);
-                    break;
-                }
-                space += itemSize;
-                ++size;
-            }
-            this.dispatch(new JReact.Action(ListActionType.UPDATE, { fromIndex: fromIndex, size: size }));
-        };
-        List.prototype.getChildrenFromContainer = function () {
-            return JReact.getInstance(JReact.getInstance(this.refs[ITEMS_CONTAINER]).refs[ITEMS_TRANSLATE]).refs[ITEMS_REFERENCE][0].children;
-            ;
-        };
-        List.prototype.cacheSizes = function () {
-            var cache = this.cache;
-            var fromIndex = this.state.fromIndex;
-            var itemEls = this.getChildrenFromContainer();
-            var sizeKey = getOffsetSizeKey(this.props.axis);
-            for (var i = 0, l = itemEls.length; i < l; ++i) {
-                cache[fromIndex + i] = itemEls[i][sizeKey];
-            }
-        };
-        List.prototype.updateUniformFrame = function () {
-            var _a = this.getItemSizeAndItemsPerRow(), itemSize = _a.itemSize, itemsPerRow = _a.itemsPerRow;
-            var _b = this.getStartAndEnd(), start = _b.start, end = _b.end;
-            var _c = this.constrain(Math.floor(start / itemSize) * itemsPerRow, (Math.ceil((end - start) / itemSize) + 1) * itemsPerRow, itemsPerRow, this.props), fromIndex = _c.fromIndex, size = _c.size;
-            this.dispatch(new JReact.Action(ListActionType.UPDATE, { itemsPerRow: itemsPerRow, fromIndex: fromIndex, itemSize: itemSize, size: size }));
-        };
-        List.prototype.getItemSizeAndItemsPerRow = function () {
-            var _a = this.props, axis = _a.axis, useStaticSize = _a.useStaticSize;
-            var _b = this.state, itemSize = _b.itemSize, itemsPerRow = _b.itemsPerRow;
-            if (useStaticSize && itemSize && itemsPerRow) {
-                return { itemSize: itemSize, itemsPerRow: itemsPerRow };
-            }
-            var itemEls = this.getChildrenFromContainer();
-            if (!itemEls.length)
-                return {};
-            var firstEl = itemEls[0];
-            // Firefox has a problem where it will return a *slightly* (less than
-            // thousandths of a pixel) different size for the same element between
-            // renders. This can cause an infinite render loop, so only change the
-            // itemSize when it is significantly different.
-            var firstElSize = firstEl[getOffsetSizeKey(axis)];
-            var delta = Math.abs(firstElSize - itemSize);
-            if (isNaN(delta) || delta >= 1)
-                itemSize = firstElSize;
-            if (!itemSize)
-                return {};
-            var startKey = getOffsetStartKey(axis);
-            var firstStart = firstEl[startKey];
-            itemsPerRow = 1;
-            for (var item = itemEls[itemsPerRow]; item && item[startKey] === firstStart; item = itemEls[itemsPerRow])
-                ++itemsPerRow;
-            return { itemSize: itemSize, itemsPerRow: itemsPerRow };
-        };
-        List.prototype.getSpaceBefore = function (index, cache) {
-            if (cache === void 0) { cache = {}; }
-            if (cache[index] != null)
-                return cache[index];
-            // Try the static itemSize.
-            var _a = this.state, itemSize = _a.itemSize, itemsPerRow = _a.itemsPerRow;
-            if (itemSize) {
-                return cache[index] = Math.floor(index / itemsPerRow) * itemSize;
-            }
-            // Find the closest space to index there is a cached value for.
-            var fromIndex = index;
-            while (fromIndex > 0 && cache[--fromIndex] == null)
-                ;
-            // Finally, accumulate sizes of items fromIndex - index.
-            var space = cache[fromIndex] || 0;
-            for (var i = fromIndex; i < index; ++i) {
-                cache[i] = space;
-                var itemSize_1 = this.getSizeOf(i);
-                if (itemSize_1 == null)
-                    break;
-                space += itemSize_1;
-            }
-            return cache[index] = space;
-        };
-        List.prototype.getSizeOf = function (index) {
-            var cache = this.cache;
-            var _a = this.props, axis = _a.axis, itemSizeGetter = _a.itemSizeGetter, itemSizeEstimator = _a.itemSizeEstimator, listType = _a.listType;
-            var _b = this.state, fromIndex = _b.fromIndex, itemSize = _b.itemSize, size = _b.size;
-            // Try the static itemSize.
-            if (itemSize)
-                return itemSize;
-            // Try the itemSizeGetter.
-            if (itemSizeGetter)
-                return itemSizeGetter(index);
-            // Try the cache.
-            if (index in cache)
-                return cache[index];
-            // Try the itemSizeEstimator.
-            if (itemSizeEstimator)
-                return itemSizeEstimator(index, cache);
-        };
-        List.prototype.constrain = function (fromIndex, size, itemsPerRow, _a) {
-            var length = _a.length, pageSize = _a.pageSize, listType = _a.listType;
-            size = Math.max(size, pageSize);
-            var mod = size % itemsPerRow;
-            if (mod)
-                size += itemsPerRow - mod;
-            if (size > length)
-                size = length;
-            fromIndex = !fromIndex ? 0 : Math.max(Math.min(fromIndex, length - size), 0);
-            if (mod = fromIndex % itemsPerRow) {
-                fromIndex -= mod;
-                size += mod;
-            }
-            return { fromIndex: fromIndex, size: size };
-        };
-        List.prototype.scrollTo = function (index) {
-            if (index != null)
-                this.setScroll(this.getSpaceBefore(index));
-        };
-        List.prototype.renderItems = function () {
-            var _a = this.props, itemRenderer = _a.itemRenderer, itemsRenderer = _a.itemsRenderer;
-            var _b = this.state, fromIndex = _b.fromIndex, size = _b.size;
-            var items = [];
-            for (var i = 0; i < size; ++i)
-                items.push(itemRenderer(fromIndex + i, i));
-            return itemsRenderer(items, ITEMS_REFERENCE);
-        };
-        List.prototype.render = function () {
-            var _a = this.props, axis = _a.axis, length = _a.length, listType = _a.listType, useTranslate3d = _a.useTranslate3d;
-            var _b = this.state, fromIndex = _b.fromIndex, itemsPerRow = _b.itemsPerRow;
-            var items = this.renderItems();
-            var style = { position: 'relative' };
-            var cache = {};
-            var bottom = Math.ceil(length / itemsPerRow) * itemsPerRow;
-            var size = this.getSpaceBefore(bottom, cache);
-            if (size) {
-                style[getSizeKey(axis)] = size;
-                if (axis === Axis.x)
-                    style.overflowX = 'hidden';
-            }
-            var offset = this.getSpaceBefore(fromIndex, cache);
-            var x = axis === Axis.x ? offset : 0;
-            var y = axis === Axis.y ? offset : 0;
-            var transform = useTranslate3d ?
-                "translate3d(" + x + "px, " + y + "px, 0)" :
-                "translate(" + x + "px, " + y + "px)";
-            var listStyle = {
-                msTransform: transform,
-                WebkitTransform: transform,
-                transform: transform
-            };
-            return JReact.createElement('div', { style: style, ref: ITEMS_CONTAINER }, JReact.createElement('div', { style: listStyle, ref: ITEMS_TRANSLATE }, items));
-        };
-        return List;
-    }(JReact.Component));
-    JReactComponents.List = List;
-})(JReactComponents || (JReactComponents = {}));
-/// <reference path="./jreact.ts"/>
-/// <reference path="../typings/tsd.d.ts"/>
-var JReactComponents;
-(function (JReactComponents) {
-    var Template = (function (_super) {
-        __extends(Template, _super);
-        function Template(props) {
-            _super.call(this, props);
-        }
-        Template.prototype.onClick = function (e) {
-            alert(this.props.label);
-        };
-        Template.prototype.componentDidMount = function () {
-            this.getElement().find('[name=' + this.props.name + ']').click(this.onClick.bind(this));
-        };
-        return Template;
-    }(JReact.Component));
-    JReactComponents.Template = Template;
-})(JReactComponents || (JReactComponents = {}));
-/// <reference path="../typings/react/react.d.ts"/>
-/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
-/// <reference path="./counter.ts"/>
-/// <reference path="./state.ts"/>
-var Serkan;
-(function (Serkan) {
-    var TodoApp = (function (_super) {
-        __extends(TodoApp, _super);
-        function TodoApp(props, context) {
-            _super.call(this, props, context);
-            //this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
-        }
-        TodoApp.prototype.componentDidMount = function () {
-            var _this = this;
-            // Here the magic happens. Everytime that the
-            // state is updated the app will re-render.
-            // A real data driven app.
-            State.on('update', function () { return _this.forceUpdate(); });
-        };
-        TodoApp.prototype.handleNewTodoKeyDown = function (event) {
-            if (event.keyCode !== Serkan.ENTER_KEY) {
-                return;
-            }
-            event.preventDefault();
-            State.trigger('todo:create', State.get().todoInput.trim());
-        };
-        TodoApp.prototype.updateTodoInput = function (e) {
-            // Update inputs needs to be done synchronously,
-            // so we use the now method.
-            // We don't need to use a reaction for this.
-            State.get().set({ todoInput: e.target.value }).now();
-        };
-        TodoApp.prototype.render = function () {
-            var state = State.get(), todos = state.todos, activeCount = 0, completedCount = 0, headerClass = 'header ' + state.status, main = null, footer = null;
-            // Let's count todos
-            todos.forEach(function (todo) {
-                if (!todo.model.completed)
-                    activeCount++;
-                else
-                    completedCount++;
-            });
-            if (todos.length) {
-                footer = React.createElement(Serkan.TodoFooter, { count: activeCount, completedCount: completedCount, nowShowing: state.filter });
-                main = React.DOM.section({ className: 'main' }, React.createElement(Serkan.TodoList, { todos: todos, filter: state.filter }));
-            }
-            return React.DOM.div(null, React.DOM.header({ className: headerClass }), React.DOM.h1(null, 'todos'), React.DOM.input({
-                className: 'new-todo',
-                ref: 'newField',
-                value: state.todoInput,
-                onChange: this.updateTodoInput.bind(this),
-                placeholder: 'What needs to be done?',
-                onKeyDown: this.handleNewTodoKeyDown.bind(this),
-                autoFocus: true
-            }), React.DOM.span({ className: 'loadingMessage' }, 'Saving...'), main, footer);
-        };
-        return TodoApp;
-    }(React.Component));
-    Serkan.TodoApp = TodoApp;
-})(Serkan || (Serkan = {}));
 /// <reference path="../typings/react/react.d.ts"/>
 /// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
 /// <reference path="./todoApp.ts"/>
@@ -1834,6 +1146,246 @@ var getTodoIndex = function (todo) {
     }
     return found;
 };
+/// <reference path="../typings/react/react.d.ts"/>
+/// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
+/// <reference path="./counter.ts"/>
+/// <reference path="./state.ts"/>
+var Serkan;
+(function (Serkan) {
+    var TodoApp = (function (_super) {
+        __extends(TodoApp, _super);
+        function TodoApp(props, context) {
+            _super.call(this, props, context);
+            //this.state = { clickCount: props && props.initialClickCount ? props.initialClickCount : 0 };
+        }
+        TodoApp.prototype.componentDidMount = function () {
+            var _this = this;
+            // Here the magic happens. Everytime that the
+            // state is updated the app will re-render.
+            // A real data driven app.
+            State.on('update', function () { return _this.forceUpdate(); });
+        };
+        TodoApp.prototype.handleNewTodoKeyDown = function (event) {
+            if (event.keyCode !== Serkan.ENTER_KEY) {
+                return;
+            }
+            event.preventDefault();
+            State.trigger('todo:create', State.get().todoInput.trim());
+        };
+        TodoApp.prototype.updateTodoInput = function (e) {
+            // Update inputs needs to be done synchronously,
+            // so we use the now method.
+            // We don't need to use a reaction for this.
+            State.get().set({ todoInput: e.target.value }).now();
+        };
+        TodoApp.prototype.render = function () {
+            var state = State.get(), todos = state.todos, activeCount = 0, completedCount = 0, headerClass = 'header ' + state.status, main = null, footer = null;
+            // Let's count todos
+            todos.forEach(function (todo) {
+                if (!todo.model.completed)
+                    activeCount++;
+                else
+                    completedCount++;
+            });
+            if (todos.length) {
+                footer = React.createElement(Serkan.TodoFooter, { count: activeCount, completedCount: completedCount, nowShowing: state.filter });
+                main = React.DOM.section({ className: 'main' }, React.createElement(Serkan.TodoList, { todos: todos, filter: state.filter }));
+            }
+            return React.DOM.div(null, React.DOM.header({ className: headerClass }), React.DOM.h1(null, 'todos'), React.DOM.input({
+                className: 'new-todo',
+                ref: 'newField',
+                value: state.todoInput,
+                onChange: this.updateTodoInput.bind(this),
+                placeholder: 'What needs to be done?',
+                onKeyDown: this.handleNewTodoKeyDown.bind(this),
+                autoFocus: true
+            }), React.DOM.span({ className: 'loadingMessage' }, 'Saving...'), main, footer);
+        };
+        return TodoApp;
+    }(React.Component));
+    Serkan.TodoApp = TodoApp;
+})(Serkan || (Serkan = {}));
+/// <reference path="./jreact.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
+var JReactComponents;
+(function (JReactComponents) {
+    var AbstractBaseWidget = (function (_super) {
+        __extends(AbstractBaseWidget, _super);
+        function AbstractBaseWidget(props) {
+            _super.call(this, props);
+            this.CONTAINER = 'jreact-widget-' + this.getWidgetName() + '-container';
+        }
+        AbstractBaseWidget.prototype.getWidgetName = function () {
+            throw new Error('should override widget name');
+        };
+        AbstractBaseWidget.prototype.getContainer = function () {
+            return JReact.createElement.bind(null, 'span');
+        };
+        AbstractBaseWidget.prototype.getContainerProps = function () {
+            return {};
+        };
+        AbstractBaseWidget.prototype.shouldComponentUpdate = function (nextProps, nextState) {
+            var update = !JReact.isSame(this.props.widgetOptions, nextProps.widgetOptions) || !JReact.isSame(this.state, nextState);
+            if (!update && this.props.children !== nextProps.children) {
+                update = (this.props.children != null && nextProps.children == null)
+                    || (this.props.children == null && nextProps.children != null)
+                    || (this.props.children != null && nextProps.children != null
+                        && (this.props.children.length !== nextProps.children.length
+                            || this.props.children.some(function (child, idx) {
+                                var nextChild = nextProps.children[idx], same = (JReact.isStringOrNumber(child) && JReact.isStringOrNumber(nextChild) && child == nextChild)
+                                    || ((child instanceof JReact.Component)
+                                        && (nextChild instanceof JReact.Component)
+                                        && child.constructor.name === nextChild.constructor.name
+                                        && !child.shouldComponentUpdate(nextChild.props, nextChild.state));
+                                return !same;
+                            })));
+            }
+            if (!update) {
+                this.props = nextProps;
+                this.state = nextState;
+            }
+            return update;
+        };
+        AbstractBaseWidget.prototype.componentWillReceiveProps = function (nextProps) {
+            this.componentWillUnmount();
+        };
+        AbstractBaseWidget.prototype.render = function () {
+            return this.getContainer().apply(void 0, [jQuery.extend({
+                className: this.CONTAINER,
+                ref: this.CONTAINER
+            }, this.getContainerProps())].concat(this.props.children));
+        };
+        return AbstractBaseWidget;
+    }(JReact.Component));
+    JReactComponents.AbstractBaseWidget = AbstractBaseWidget;
+    var AbstractWidget = (function (_super) {
+        __extends(AbstractWidget, _super);
+        function AbstractWidget(props) {
+            _super.call(this, props);
+        }
+        AbstractWidget.prototype.componentDidMount = function () {
+            this.refs[this.CONTAINER][this.getWidgetName()](this.props.widgetOptions || {});
+        };
+        AbstractWidget.prototype.componentWillUnmount = function () {
+            this.refs[this.CONTAINER][this.getWidgetName()]('destroy');
+        };
+        AbstractWidget.prototype.componentDidUpdate = function () {
+            this.refs[this.CONTAINER][this.getWidgetName()](this.props.widgetOptions || {});
+        };
+        return AbstractWidget;
+    }(AbstractBaseWidget));
+    JReactComponents.AbstractWidget = AbstractWidget;
+    var Resizable = (function (_super) {
+        __extends(Resizable, _super);
+        function Resizable(props) {
+            _super.call(this, props);
+        }
+        Resizable.prototype.getWidgetName = function () {
+            return 'resizable';
+        };
+        Resizable.prototype.getContainer = function () {
+            return JReact.createElement.bind(null, 'div');
+        };
+        Resizable.prototype.onResizeStop = function (ui) {
+            this.state = ui.size;
+        };
+        Resizable.prototype.getDefaultProps = function () {
+            return {
+                widgetOptions: {
+                    grid: [1, 1],
+                    stop: function (e, ui) {
+                        JReact.getInstance(jQuery(e.target).parent()).onResizeStop(ui);
+                    }
+                }
+            };
+        };
+        Resizable.prototype.getContainerProps = function () {
+            if (this.state)
+                return {
+                    style: {
+                        width: this.state.width,
+                        height: this.state.height
+                    }
+                };
+            return _super.prototype.getContainerProps.call(this);
+        };
+        return Resizable;
+    }(AbstractWidget));
+    JReactComponents.Resizable = Resizable;
+    var Accordion = (function (_super) {
+        __extends(Accordion, _super);
+        function Accordion(props) {
+            _super.call(this, props);
+        }
+        Accordion.prototype.getWidgetName = function () {
+            return 'accordion';
+        };
+        return Accordion;
+    }(AbstractWidget));
+    JReactComponents.Accordion = Accordion;
+    var LongPress = (function (_super) {
+        __extends(LongPress, _super);
+        function LongPress(props) {
+            _super.call(this, props);
+        }
+        LongPress.prototype.getWidgetName = function () {
+            return 'longpress';
+        };
+        LongPress.prototype.getDefaultProps = function () {
+            return {
+                widgetOptions: {
+                    delay: 500,
+                    shortCallback: JReact.NOOP,
+                    longCallback: JReact.NOOP
+                }
+            };
+        };
+        LongPress.prototype.clearTimeout = function () {
+            clearTimeout(LongPress.timeout);
+            LongPress.timeout = null;
+        };
+        LongPress.prototype.onMouseDown = function (e) {
+            var _this = this;
+            if (e.button === 0)
+                LongPress.timeout = setTimeout(function () {
+                    _this.props.widgetOptions.longCallback.call(_this, e);
+                    LongPress.timeout = null;
+                }, this.props.widgetOptions.delay);
+        };
+        LongPress.prototype.onMouseUp = function (e) {
+            if (e.button === 0 && LongPress.timeout != null) {
+                this.clearTimeout();
+                this.props.widgetOptions.shortCallback.call(this, e);
+            }
+        };
+        LongPress.prototype.onMouseMove = function (e) {
+            if (LongPress.timeout != null)
+                this.clearTimeout();
+        };
+        //private onContextMenu(e: JQueryEventObject) {
+        //  if (this.timeout == null && e.type !== 'mouseup') {
+        //    this.props.widgetOptions.longCallback.call(this, e);
+        //    e.preventDefault();
+        //    e.stopPropagation();
+        //    return false;
+        //  }
+        //}
+        LongPress.prototype.getContainerProps = function () {
+            return {
+                //contextmenu: this.onContextMenu.bind(this),
+                mousedown: this.onMouseDown.bind(this),
+                mouseup: this.onMouseUp.bind(this),
+                mousemove: this.onMouseMove.bind(this),
+                touchstart: this.onMouseDown.bind(this),
+                touchend: this.onMouseUp.bind(this),
+                touchmove: this.onMouseMove.bind(this)
+            };
+        };
+        LongPress.timeout = null;
+        return LongPress;
+    }(AbstractBaseWidget));
+    JReactComponents.LongPress = LongPress;
+})(JReactComponents || (JReactComponents = {}));
 /// <reference path="../typings/jquery/jquery.d.ts"/>
 /// <reference path="../typings/jqueryui/jqueryui.d.ts"/>
 /// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
@@ -1932,6 +1484,450 @@ var getTodoIndex = function (todo) {
         }
     });
 })(jQuery);
+/// <reference path="./jreact.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
+var JReactComponents;
+(function (JReactComponents) {
+    var MyGridListActionType;
+    (function (MyGridListActionType) {
+    })(MyGridListActionType || (MyGridListActionType = {}));
+    var MyGridList = (function (_super) {
+        __extends(MyGridList, _super);
+        function MyGridList(props) {
+            _super.call(this, props);
+            this.itemRenderer = this.itemRenderer.bind(this);
+            this.itemsRenderer = this.itemsRenderer.bind(this);
+        }
+        MyGridList.prototype.itemsRenderer = function (items, ref) {
+            return JReact.createElement.apply(JReact, ['div', { ref: ref }].concat(items));
+        };
+        MyGridList.prototype.itemRenderer = function (row, key) {
+            var XLENGTH = 100, style = { display: "inline-block", width: "100px" };
+            return JReact.createElement(
+            //COLUMN
+            JReactComponents.List, {
+                axis: JReactComponents.Axis.x,
+                key: key,
+                pageSize: 10,
+                threshold: 20,
+                listType: JReactComponents.ListType.uniform,
+                itemsRenderer: this.itemsRenderer,
+                itemRenderer: function (col, key) { return JReact.createElement('div', { key: key, style: style }, 'x' + (col + (XLENGTH * row)) + 'x'); },
+                length: XLENGTH
+            });
+        };
+        MyGridList.prototype.render = function () {
+            return JReact.createElement('div', { style: { overflow: 'auto', maxHeight: 100 } }, 
+            //GRID
+            JReact.createElement(JReactComponents.List, {
+                axis: JReactComponents.Axis.y,
+                key: 1,
+                pageSize: 10,
+                threshold: 20,
+                listType: JReactComponents.ListType.uniform,
+                useStaticSize: false,
+                useTranslate3d: true,
+                itemsRenderer: this.itemsRenderer,
+                itemRenderer: this.itemRenderer,
+                length: 1000
+            }));
+        };
+        return MyGridList;
+    }(JReact.Component));
+    JReactComponents.MyGridList = MyGridList;
+})(JReactComponents || (JReactComponents = {}));
+/// <reference path="./jreact.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
+var JReactComponents;
+(function (JReactComponents) {
+    var Todo = (function (_super) {
+        __extends(Todo, _super);
+        function Todo(props) {
+            _super.call(this, props);
+        }
+        Todo.prototype.componentDidMount = function () {
+            this.refs[Todo.TODO_DIV].effect('highlight');
+        };
+        Todo.prototype.componentDidUpdate = function () {
+            this.refs[Todo.TODO_DIV].effect('highlight');
+        };
+        Todo.prototype.render = function () {
+            var _a = this.props, todo = _a.todo, todoClick = _a.todoClick;
+            return JReact.createElement('div', {
+                className: Todo.TODO_DIV + (todo.selected ? ' selected' : ''),
+                style: {
+                    backgroundColor: 'beige'
+                },
+                ref: Todo.TODO_DIV,
+                click: function (e) {
+                    if (todoClick)
+                        todoClick.call(this, e, todo.message);
+                }
+            }, JReact.createElement('span', { className: 'todo-span', ref: 'todo-span' }, todo.message));
+        };
+        Todo.TODO_DIV = 'todo-div';
+        return Todo;
+    }(JReact.Component));
+    JReactComponents.Todo = Todo;
+})(JReactComponents || (JReactComponents = {}));
+/// <reference path="./jreact.ts"/>
+/// <reference path="../typings/tsd.d.ts"/>
+var JReactComponents;
+(function (JReactComponents) {
+    var ITEMS_CONTAINER = 'items_container';
+    var ITEMS_TRANSLATE = 'items_translate';
+    var ITEMS_REFERENCE = 'items_reference';
+    function getClientStartKey(axis) {
+        return axis === Axis.x ? 'clientTop' : 'clientLeft';
+    }
+    function getClientSizeKey(axis) {
+        return axis === Axis.x ? 'clientWidth' : 'clientHeight';
+    }
+    function getInnerSizeKey(axis) {
+        return axis === Axis.x ? 'innerWidth' : 'innerHeight';
+    }
+    function getScrollSizeKey(axis) {
+        return axis === Axis.x ? 'scrollWidth' : 'scrollHeight';
+    }
+    function getScrollStartKey(axis) {
+        return axis === Axis.x ? 'scrollLeft' : 'scrollTop';
+    }
+    function getOffsetSizeKey(axis) {
+        return axis === Axis.x ? 'offsetWidth' : 'offsetHeight';
+    }
+    function getOffsetStartKey(axis) {
+        return axis === Axis.x ? 'offsetLeft' : 'offsetTop';
+    }
+    function getOverflowKey(axis) {
+        return axis === Axis.x ? 'overflowX' : 'overflowY';
+    }
+    function getSizeKey(axis) {
+        return axis === Axis.x ? 'width' : 'height';
+    }
+    (function (Axis) {
+        Axis[Axis["x"] = 0] = "x";
+        Axis[Axis["y"] = 1] = "y";
+    })(JReactComponents.Axis || (JReactComponents.Axis = {}));
+    var Axis = JReactComponents.Axis;
+    (function (ListType) {
+        ListType[ListType["uniform"] = 0] = "uniform";
+        ListType[ListType["variable"] = 1] = "variable";
+    })(JReactComponents.ListType || (JReactComponents.ListType = {}));
+    var ListType = JReactComponents.ListType;
+    var ListActionType;
+    (function (ListActionType) {
+        ListActionType[ListActionType["UPDATE"] = 0] = "UPDATE";
+    })(ListActionType || (ListActionType = {}));
+    var List = (function (_super) {
+        __extends(List, _super);
+        function List(props) {
+            _super.call(this, props);
+            var _a = this.props, initialIndex = _a.initialIndex, pageSize = _a.pageSize;
+            var itemsPerRow = 1;
+            var _b = this.constrain(initialIndex, pageSize, itemsPerRow, this.props), fromIndex = _b.fromIndex, size = _b.size;
+            this.state = { fromIndex: fromIndex, size: size, itemsPerRow: itemsPerRow };
+            this.cache = {};
+        }
+        List.prototype.getTag = function () {
+            return 'div';
+        };
+        List.prototype.update = function (field, action, actionField) {
+            if (field === void 0) { field = 1; }
+            switch (action.type) {
+                case ListActionType.UPDATE:
+                    if (typeof actionField === 'undefined')
+                        return field;
+                    else
+                        return actionField;
+                default:
+                    return field;
+            }
+        };
+        List.prototype.reduce = function (state, action) {
+            if (state === void 0) { state = {}; }
+            return {
+                itemsPerRow: this.update(state.itemsPerRow, action, action.payload.itemsPerRow),
+                fromIndex: this.update(state.fromIndex, action, action.payload.fromIndex),
+                itemSize: this.update(state.itemSize, action, action.payload.itemSize),
+                size: this.update(state.size, action, action.payload.size)
+            };
+        };
+        List.prototype.componentWillReceiveProps = function (nextProps) {
+            var _a = this.state, fromIndex = _a.fromIndex, size = _a.size, itemsPerRow = _a.itemsPerRow;
+            this.setState(this.constrain(fromIndex, size, itemsPerRow, nextProps));
+        };
+        List.prototype.componentDidMount = function () {
+            this.updateFrame = this.updateFrame.bind(this);
+            jQuery(window).bind('resize', this.updateFrame);
+            this.updateFrame();
+        };
+        List.prototype.componentDidUpdate = function () {
+            this.updateFrame();
+        };
+        List.prototype.componentWillUnmount = function () {
+            jQuery(window).unbind('resize', this.updateFrame);
+            jQuery(this.scrollParent).unbind('scroll', this.updateFrame);
+        };
+        List.prototype.updateFrame = function () {
+            this.updateScrollParent();
+            switch (this.props.listType) {
+                case ListType.variable: return this.updateVariableFrame();
+                case ListType.uniform: return this.updateUniformFrame();
+            }
+        };
+        List.prototype.updateScrollParent = function () {
+            var prev = this.scrollParent;
+            this.scrollParent = this.getScrollParent();
+            if (prev === this.scrollParent)
+                return;
+            if (prev)
+                jQuery(prev).unbind('scroll', this.updateFrame);
+            jQuery(this.scrollParent).bind('scroll', this.updateFrame);
+        };
+        List.prototype.getScrollParent = function () {
+            var _a = this.props, axis = _a.axis, scrollParentGetter = _a.scrollParentGetter;
+            if (scrollParentGetter)
+                return scrollParentGetter();
+            var el = this.getElement().get(0);
+            var overflowKey = getOverflowKey(axis);
+            while (el = el.parentElement) {
+                switch (window.getComputedStyle(el)[overflowKey]) {
+                    case 'auto':
+                    case 'scroll':
+                    case 'overlay':
+                        return el;
+                }
+            }
+            return window;
+        };
+        List.prototype.getOffset = function (el) {
+            var axis = this.props.axis;
+            var offset = el[getClientStartKey(axis)] || 0;
+            var offsetKey = getOffsetStartKey(axis);
+            do
+                offset += el[offsetKey] || 0;
+            while (el = el.offsetParent);
+            return offset;
+        };
+        List.prototype.getScroll = function () {
+            var scrollParent = this.scrollParent;
+            var axis = this.props.axis;
+            var scrollKey = getScrollStartKey(axis);
+            var actual = scrollParent === window ?
+                // Firefox always returns document.body[scrollKey] as 0 and Chrome/Safari
+                // always return document.documentElement[scrollKey] as 0, so take
+                // whichever has a value.
+                document.body[scrollKey] || document.documentElement[scrollKey] :
+                scrollParent[scrollKey];
+            var max = this.getScrollSize() - this.getViewportSize();
+            var scroll = Math.max(0, Math.min(actual, max));
+            var el = this.getElement().get(0);
+            return this.getOffset(scrollParent) + scroll - this.getOffset(el);
+        };
+        List.prototype.setScroll = function (offset) {
+            var scrollParent = this.scrollParent;
+            var axis = this.props.axis;
+            offset += this.getOffset(this.getElement().get(0));
+            if (scrollParent === window)
+                return window.scrollTo(0, offset);
+            offset -= this.getOffset(this.scrollParent);
+            scrollParent[getScrollStartKey(axis)] = offset;
+        };
+        List.prototype.getViewportSize = function () {
+            var scrollParent = this.scrollParent;
+            var axis = this.props.axis;
+            return scrollParent === window ?
+                window[getInnerSizeKey(axis)] :
+                scrollParent[getClientSizeKey(axis)];
+        };
+        List.prototype.getScrollSize = function () {
+            var scrollParent = this.scrollParent;
+            var key = getScrollSizeKey(this.props.axis);
+            return scrollParent === window ?
+                Math.max(document.body[key], document.documentElement[key]) :
+                scrollParent[key];
+        };
+        List.prototype.getStartAndEnd = function (threshold) {
+            if (threshold === void 0) { threshold = this.props.threshold; }
+            var _a = this.props, itemSizeGetter = _a.itemSizeGetter, listType = _a.listType, length = _a.length;
+            var scroll = this.getScroll();
+            var start = Math.max(0, scroll - threshold);
+            var end = scroll + this.getViewportSize() + threshold;
+            if (listType === ListType.uniform || itemSizeGetter)
+                end = Math.min(end, this.getSpaceBefore(length));
+            return { start: start, end: end };
+        };
+        List.prototype.updateVariableFrame = function () {
+            if (!this.props.itemSizeGetter)
+                this.cacheSizes();
+            var _a = this.getStartAndEnd(), start = _a.start, end = _a.end;
+            var _b = this.props, length = _b.length, pageSize = _b.pageSize;
+            var space = 0;
+            var fromIndex = 0;
+            var size = 0;
+            var maxFrom = length - 1;
+            while (fromIndex < maxFrom) {
+                var itemSize = this.getSizeOf(fromIndex);
+                if (itemSize == null || space + itemSize > start)
+                    break;
+                space += itemSize;
+                ++fromIndex;
+            }
+            var maxSize = length - fromIndex;
+            while (size < maxSize && space < end) {
+                var itemSize = this.getSizeOf(fromIndex + size);
+                if (itemSize == null) {
+                    size = Math.min(size + pageSize, maxSize);
+                    break;
+                }
+                space += itemSize;
+                ++size;
+            }
+            this.dispatch(new JReact.Action(ListActionType.UPDATE, { fromIndex: fromIndex, size: size }));
+        };
+        List.prototype.getChildrenFromContainer = function () {
+            return JReact.getInstance(JReact.getInstance(this.refs[ITEMS_CONTAINER]).refs[ITEMS_TRANSLATE]).refs[ITEMS_REFERENCE][0].children;
+            ;
+        };
+        List.prototype.cacheSizes = function () {
+            var cache = this.cache;
+            var fromIndex = this.state.fromIndex;
+            var itemEls = this.getChildrenFromContainer();
+            var sizeKey = getOffsetSizeKey(this.props.axis);
+            for (var i = 0, l = itemEls.length; i < l; ++i) {
+                cache[fromIndex + i] = itemEls[i][sizeKey];
+            }
+        };
+        List.prototype.updateUniformFrame = function () {
+            var _a = this.getItemSizeAndItemsPerRow(), itemSize = _a.itemSize, itemsPerRow = _a.itemsPerRow;
+            var _b = this.getStartAndEnd(), start = _b.start, end = _b.end;
+            var _c = this.constrain(Math.floor(start / itemSize) * itemsPerRow, (Math.ceil((end - start) / itemSize) + 1) * itemsPerRow, itemsPerRow, this.props), fromIndex = _c.fromIndex, size = _c.size;
+            this.dispatch(new JReact.Action(ListActionType.UPDATE, { itemsPerRow: itemsPerRow, fromIndex: fromIndex, itemSize: itemSize, size: size }));
+        };
+        List.prototype.getItemSizeAndItemsPerRow = function () {
+            var _a = this.props, axis = _a.axis, useStaticSize = _a.useStaticSize;
+            var _b = this.state, itemSize = _b.itemSize, itemsPerRow = _b.itemsPerRow;
+            if (useStaticSize && itemSize && itemsPerRow) {
+                return { itemSize: itemSize, itemsPerRow: itemsPerRow };
+            }
+            var itemEls = this.getChildrenFromContainer();
+            if (!itemEls.length)
+                return {};
+            var firstEl = itemEls[0];
+            // Firefox has a problem where it will return a *slightly* (less than
+            // thousandths of a pixel) different size for the same element between
+            // renders. This can cause an infinite render loop, so only change the
+            // itemSize when it is significantly different.
+            var firstElSize = firstEl[getOffsetSizeKey(axis)];
+            var delta = Math.abs(firstElSize - itemSize);
+            if (isNaN(delta) || delta >= 1)
+                itemSize = firstElSize;
+            if (!itemSize)
+                return {};
+            var startKey = getOffsetStartKey(axis);
+            var firstStart = firstEl[startKey];
+            itemsPerRow = 1;
+            for (var item = itemEls[itemsPerRow]; item && item[startKey] === firstStart; item = itemEls[itemsPerRow])
+                ++itemsPerRow;
+            return { itemSize: itemSize, itemsPerRow: itemsPerRow };
+        };
+        List.prototype.getSpaceBefore = function (index, cache) {
+            if (cache === void 0) { cache = {}; }
+            if (cache[index] != null)
+                return cache[index];
+            // Try the static itemSize.
+            var _a = this.state, itemSize = _a.itemSize, itemsPerRow = _a.itemsPerRow;
+            if (itemSize)
+                return cache[index] = Math.floor(index / itemsPerRow) * itemSize;
+            // Find the closest space to index there is a cached value for.
+            var fromIndex = index;
+            while (fromIndex > 0 && cache[--fromIndex] == null)
+                ;
+            // Finally, accumulate sizes of items fromIndex - index.
+            var space = cache[fromIndex] || 0;
+            for (var i = fromIndex; i < index; ++i) {
+                cache[i] = space;
+                var itemSize_1 = this.getSizeOf(i);
+                if (itemSize_1 == null)
+                    break;
+                space += itemSize_1;
+            }
+            return cache[index] = space;
+        };
+        List.prototype.getSizeOf = function (index) {
+            var cache = this.cache;
+            var _a = this.props, axis = _a.axis, itemSizeGetter = _a.itemSizeGetter, itemSizeEstimator = _a.itemSizeEstimator, listType = _a.listType;
+            var _b = this.state, fromIndex = _b.fromIndex, itemSize = _b.itemSize, size = _b.size;
+            // Try the static itemSize.
+            if (itemSize)
+                return itemSize;
+            // Try the itemSizeGetter.
+            if (itemSizeGetter)
+                return itemSizeGetter(index);
+            // Try the cache.
+            if (index in cache)
+                return cache[index];
+            // Try the itemSizeEstimator.
+            if (itemSizeEstimator)
+                return itemSizeEstimator(index, cache);
+        };
+        List.prototype.constrain = function (fromIndex, size, itemsPerRow, _a) {
+            var length = _a.length, pageSize = _a.pageSize, listType = _a.listType;
+            size = Math.max(size, pageSize);
+            var mod = size % itemsPerRow;
+            if (mod)
+                size += itemsPerRow - mod;
+            if (size > length)
+                size = length;
+            fromIndex = !fromIndex ? 0 : Math.max(Math.min(fromIndex, length - size), 0);
+            if (mod = fromIndex % itemsPerRow) {
+                fromIndex -= mod;
+                size += mod;
+            }
+            return { fromIndex: fromIndex, size: size };
+        };
+        List.prototype.scrollTo = function (index) {
+            if (index != null)
+                this.setScroll(this.getSpaceBefore(index));
+        };
+        List.prototype.renderItems = function () {
+            var _a = this.props, itemRenderer = _a.itemRenderer, itemsRenderer = _a.itemsRenderer;
+            var _b = this.state, fromIndex = _b.fromIndex, size = _b.size;
+            var items = [];
+            for (var i = 0; i < size; ++i)
+                items.push(itemRenderer(fromIndex + i, i));
+            return itemsRenderer(items, ITEMS_REFERENCE);
+        };
+        List.prototype.render = function () {
+            var _a = this.props, axis = _a.axis, length = _a.length, listType = _a.listType, useTranslate3d = _a.useTranslate3d;
+            var _b = this.state, fromIndex = _b.fromIndex, itemsPerRow = _b.itemsPerRow;
+            var items = this.renderItems();
+            var style = { position: 'relative' };
+            var cache = {};
+            var bottom = Math.ceil(length / itemsPerRow) * itemsPerRow;
+            var size = this.getSpaceBefore(bottom, cache);
+            if (size) {
+                style[getSizeKey(axis)] = size;
+                if (axis === Axis.x)
+                    style.overflowX = 'hidden';
+            }
+            var offset = this.getSpaceBefore(fromIndex, cache);
+            var x = axis === Axis.x ? offset : 0;
+            var y = axis === Axis.y ? offset : 0;
+            var transform = useTranslate3d ?
+                "translate3d(" + x + "px, " + y + "px, 0)" :
+                "translate(" + x + "px, " + y + "px)";
+            var listStyle = {
+                msTransform: transform,
+                WebkitTransform: transform,
+                transform: transform
+            };
+            return JReact.createElement('div', { style: style, ref: ITEMS_CONTAINER }, JReact.createElement('div', { style: listStyle, ref: ITEMS_TRANSLATE }, items));
+        };
+        return List;
+    }(JReact.Component));
+    JReactComponents.List = List;
+})(JReactComponents || (JReactComponents = {}));
 /// <reference path="../typings/react/react.d.ts"/>
 /// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
 /// <reference path="./counter.ts"/>

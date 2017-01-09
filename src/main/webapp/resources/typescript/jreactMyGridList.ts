@@ -6,7 +6,6 @@ module JReactComponents {
   }
 
   enum MyGridListActionType {
-    UPDATE_SIZE
   }
 
   interface MyGridListActionPayload {
@@ -33,6 +32,7 @@ module JReactComponents {
     protected itemRenderer(row: number, key: JReact.Key) {
       const XLENGTH = 100, style = { display: "inline-block", width: "100px" };
       return JReact.createElement<ListProps, List>(
+        //COLUMN
         JReactComponents.List,
         {
           axis: Axis.x,
@@ -64,7 +64,7 @@ module JReactComponents {
             useTranslate3d: true,
             itemsRenderer: this.itemsRenderer,
             itemRenderer: this.itemRenderer,
-            length: 100
+            length: 1000
           }));
     }
   }

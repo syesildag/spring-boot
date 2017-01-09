@@ -93,13 +93,13 @@
 <body>
    <div>
      <p>
-       <span id="counter"></span>
-       <span id="value"></span>
-       <span id="svg"></span>
-       <span id="draggable"></span>
-       <span id="droppable"></span>
-       <span id="mylist"></span>
-       <span>==========</span>
+<!--        <span id="counter"></span> -->
+<!--        <span id="value"></span> -->
+<!--        <span id="svg"></span> -->
+<!--        <span id="draggable"></span> -->
+<!--        <span id="droppable"></span> -->
+<!--        <span id="mylist"></span> -->
+<!--        <span>==========</span> -->
        <span id="mygridlist"></span>
        <span id="template"></span>
      </p>

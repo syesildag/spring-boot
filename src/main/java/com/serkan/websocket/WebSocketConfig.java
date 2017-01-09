@@ -74,7 +74,7 @@ public class WebSocketConfig implements WebSocketConfigurer, ApplicationContextA
       PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
       CachingMetadataReaderFactory cachingMetadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
       
-      List<Class<T>> candidates = new ArrayList<Class<T>>();
+      List<Class<T>> candidates = new ArrayList<>();
       String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(basePackage.getName())) + "/" + "**/*.class";
       try {
          for (Resource resource : resourcePatternResolver.getResources(packageSearchPath)) {
