@@ -46,7 +46,7 @@ module JReactComponents {
   export enum ListType { uniform, variable }
 
   export interface ItemRenderer extends Function {
-    (index: number, key: JReact.Key): JReact.Component<any, any, any, any>
+    (index: number, key: JReact.Key, first?: boolean, offset?: number, scroll?: number): JReact.Component<any, any, any, any>
   }
 
   export interface ItemsRenderer extends Function {
@@ -62,7 +62,7 @@ module JReactComponents {
   }
 
   export interface ItemSizeGetter extends Function {
-    (index: number): any
+    (index: number): number
   }
 
   export interface ScrollParentGetter extends Function {
@@ -77,17 +77,18 @@ module JReactComponents {
     state?: ListState,
     axis?: Axis,
     initialIndex?: number,
-    itemRenderer?: ItemRenderer,
+    itemRenderer: ItemRenderer,
     itemSizeEstimator?: ItemSizeEstimator,
     itemSizeGetter?: ItemSizeGetter,
-    itemsRenderer?: ItemsRenderer,
+    itemsRenderer: ItemsRenderer,
     length: number,
     pageSize: number,
     scrollParentGetter?: ScrollParentGetter,
     threshold: number,
     listType: ListType,
     useStaticSize?: boolean,
-    useTranslate3d?: boolean
+    useTranslate3d?: boolean,
+    fixedHeader?: boolean
   }
 
   export interface ListState {
@@ -147,7 +148,8 @@ module JReactComponents {
     }
 
     public componentDidMount() {
-      this.updateFrame = this.updateFrame.bind(this);
+      this.updateFrame = Utils.debounce(this.updateFrame.bind(this), 0, false);
+      //this.updateFrame = this.updateFrame.bind(this);
       jQuery(window).bind('resize', this.updateFrame);
       this.updateFrame();
     }
@@ -226,7 +228,8 @@ module JReactComponents {
       const {scrollParent} = this;
       const {axis} = this.props;
       offset += this.getOffset(this.getElement().get(0));
-      if (<any>scrollParent === window) return window.scrollTo(0, offset);
+      if (<any>scrollParent === window)
+        return window.scrollTo(0, offset);
 
       offset -= this.getOffset(this.scrollParent);
       (<any>scrollParent)[getScrollStartKey(axis)] = offset;
@@ -241,8 +244,15 @@ module JReactComponents {
     }
 
     private getScrollSize() {
+      return this.getScrollFromKey(getScrollSizeKey(this.props.axis));
+    }
+
+    private getScrollStart() {
+      return this.getScrollFromKey(getScrollStartKey(this.props.axis));
+    }
+
+    private getScrollFromKey(key: string) {
       const {scrollParent} = this;
-      const key = getScrollSizeKey(this.props.axis);
       return <any>scrollParent === window ?
         Math.max((<any>document.body)[key], (<any>document.documentElement)[key]) :
         (<any>scrollParent)[key];
@@ -259,7 +269,8 @@ module JReactComponents {
     }
 
     private updateVariableFrame() {
-      if (!this.props.itemSizeGetter) this.cacheSizes();
+      if (!this.props.itemSizeGetter)
+        this.cacheSizes();
 
       const {start, end} = this.getStartAndEnd();
       const {length, pageSize} = this.props;
@@ -353,7 +364,8 @@ module JReactComponents {
     }
 
     private getSpaceBefore(index: number, cache: Cache = {}) {
-      if (cache[index] != null) return cache[index];
+      if (cache[index] != null)
+        return cache[index];
       
       // Try the static itemSize.
       const {itemSize, itemsPerRow} = this.state;
@@ -369,7 +381,8 @@ module JReactComponents {
       for (let i = fromIndex; i < index; ++i) {
         cache[i] = space;
         const itemSize = this.getSizeOf(i);
-        if (itemSize == null) break;
+        if (itemSize == null)
+          return null;
         space += itemSize;
       }
 
@@ -410,15 +423,24 @@ module JReactComponents {
     }
 
     private scrollTo(index: number) {
-      if (index != null) this.setScroll(this.getSpaceBefore(index));
+      if (index != null)
+        this.setScroll(this.getSpaceBefore(index));
     }
 
-    private renderItems(): JReact.Component<any, any, any, any> {
+    private renderItems(offset: number): JReact.Component<any, any, any, any> {
       const {itemRenderer, itemsRenderer} = this.props;
       const {fromIndex, size} = this.state;
       const items: JReact.ComponentArray = [];
-      for (let i = 0; i < size; ++i) items.push(itemRenderer(fromIndex + i, i));
+      let scroll = this.scrollParent ? Math.max(0, this.getScroll()) : 0;
+      for (let i = 0; i < size; ++i)
+        items.push(itemRenderer(fromIndex + i, i, i === 0, offset, scroll));
       return itemsRenderer(items, ITEMS_REFERENCE);
+    }
+
+    public shouldComponentUpdate(nextProps: ListProps, nextState: ListState): boolean {
+      if (this.props.fixedHeader)
+        return true;
+      return super.shouldComponentUpdate(nextProps, nextState);
     }
 
     public render() {
@@ -426,17 +448,19 @@ module JReactComponents {
       const {axis, length, listType, useTranslate3d} = this.props;
       const {fromIndex, itemsPerRow} = this.state;
 
-      const items = this.renderItems();
+      const cache: Cache = {};
+      const offset = this.getSpaceBefore(fromIndex, cache);
+
+      const items = this.renderItems(offset);
 
       const style: React.CSSProperties = { position: 'relative' };
-      const cache: Cache = {};
       const bottom = Math.ceil(length / itemsPerRow) * itemsPerRow;
       const size = this.getSpaceBefore(bottom, cache);
       if (size) {
         (<any>style)[getSizeKey(axis)] = size;
-        if (axis === Axis.x) style.overflowX = 'hidden';
+        if (axis === Axis.x)
+          style.overflowX = 'hidden';
       }
-      const offset = this.getSpaceBefore(fromIndex, cache);
       const x = axis === Axis.x ? offset : 0;
       const y = axis === Axis.y ? offset : 0;
       const transform = useTranslate3d ?

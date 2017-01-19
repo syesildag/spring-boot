@@ -427,23 +427,6 @@ module JReact {
     public getTag(): string {
       return this.tag;
     }
-
-    public shouldComponentUpdate(nextProps: P, nextState: any): boolean {
-
-      if (!this.props.children && !nextProps.children)
-        return false;
-
-      if (this.props.children
-        && this.props.children.length === 1
-        && isStringOrNumber(this.props.children[0])
-        && nextProps
-        && nextProps.children.length === 1
-        && isStringOrNumber(nextProps.children[0])
-        && this.props.children[0] == nextProps.children[0])
-        return false;
-
-      return super.shouldComponentUpdate(nextProps, nextState);
-    }
   }
 
   export interface JQueryEventHandler {

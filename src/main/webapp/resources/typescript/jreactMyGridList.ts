@@ -22,28 +22,38 @@ module JReactComponents {
     }
 
     protected itemsRenderer(items: JReact.ComponentArray, ref: string) {
+      const style = { whiteSpace: "nowrap" };
       return JReact.createElement(
         'div',
-        { ref },
+        { ref, style },
         ...items
         );
     }
 
     protected itemRenderer(row: number, key: JReact.Key) {
-      const XLENGTH = 100, style = { display: "inline-block", width: "100px" };
+      const XLENGTH = 100;
       return JReact.createElement<ListProps, List>(
         //COLUMN
         JReactComponents.List,
         {
           axis: Axis.x,
-          key: key,
+          key: row,
           pageSize: 10,
-          threshold: 20,          listType: ListType.uniform,          itemsRenderer: this.itemsRenderer,          itemRenderer: (col: number, key: JReact.Key) => JReact.createElement(
-            'div',
-            { key, style },
-            'x' + (col + (XLENGTH * row)) + 'x'
-            ),
-          length: XLENGTH
+          threshold: 20,          listType: ListType.uniform,          itemsRenderer: this.itemsRenderer,          itemRenderer: (col: number, key: JReact.Key, first: boolean, offset: number, scroll: number) => {
+            const style: React.CSSProperties = { display: "inline-block", width: "100px" };
+            if (first) {
+              style.position = 'relative';
+              style.left = (scroll - offset) + 'px';
+              style.backgroundColor = 'yellow';
+            }
+            return JReact.createElement(
+              'div',
+              { key: col, style },
+              'x' + (col + (XLENGTH * row)) + 'x'
+              )
+          },
+          length: XLENGTH,
+          fixedHeader: true
         });
     }
 

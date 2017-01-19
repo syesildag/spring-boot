@@ -512,19 +512,6 @@ var JReact;
         ComponentDOM.prototype.getTag = function () {
             return this.tag;
         };
-        ComponentDOM.prototype.shouldComponentUpdate = function (nextProps, nextState) {
-            if (!this.props.children && !nextProps.children)
-                return false;
-            if (this.props.children
-                && this.props.children.length === 1
-                && isStringOrNumber(this.props.children[0])
-                && nextProps
-                && nextProps.children.length === 1
-                && isStringOrNumber(nextProps.children[0])
-                && this.props.children[0] == nextProps.children[0])
-                return false;
-            return _super.prototype.shouldComponentUpdate.call(this, nextProps, nextState);
-        };
         return ComponentDOM;
     }(Component));
     var templateCache = {};
@@ -633,23 +620,31 @@ var JReactComponents;
         function MyList(props) {
             _super.call(this, props);
         }
-        MyList.prototype.itemRenderer = function (index, key) {
-            return JReact.createElement('div', { key: key }, 'x' + index + 'x');
+        MyList.prototype.itemRenderer = function (index, key, first, offset, scroll) {
+            var style = {};
+            if (first) {
+                style.position = 'relative';
+                style.top = (scroll - offset) + 'px';
+                style.backgroundColor = 'yellow';
+            }
+            return JReact.createElement('div', { key: index, style: style }, first ? 'header' : 'x' + index + 'x' + '-' + first + '- offset ' + offset + '- scroll ' + scroll);
         };
         MyList.prototype.itemsRenderer = function (items, ref) {
             return JReact.createElement.apply(JReact, ['div', { ref: ref }].concat(items));
         };
         MyList.prototype.render = function () {
-            return JReact.createElement('div', { style: { overflow: 'auto', maxHeight: 100 } }, JReact.createElement(JReactComponents.List, {
+            return JReact.createElement('div', { style: { overflow: 'auto', maxHeight: 100 } }, JReact.createElement('div', { key: 0 }, 'serkan1'), JReact.createElement('div', { key: 1 }, 'serkan2'), JReact.createElement('div', { key: 2 }, 'serkan3'), JReact.createElement(JReactComponents.List, {
+                key: 3,
                 axis: JReactComponents.Axis.y,
                 listType: JReactComponents.ListType.uniform,
                 useStaticSize: false,
                 useTranslate3d: true,
-                pageSize: 10,
-                threshold: 20,
+                pageSize: 20,
+                threshold: 80,
                 itemRenderer: this.itemRenderer,
                 itemsRenderer: this.itemsRenderer,
-                length: 100
+                length: 100,
+                fixedHeader: true
             }));
         };
         return MyList;
@@ -1499,21 +1494,31 @@ var JReactComponents;
             this.itemsRenderer = this.itemsRenderer.bind(this);
         }
         MyGridList.prototype.itemsRenderer = function (items, ref) {
-            return JReact.createElement.apply(JReact, ['div', { ref: ref }].concat(items));
+            var style = { whiteSpace: "nowrap" };
+            return JReact.createElement.apply(JReact, ['div', { ref: ref, style: style }].concat(items));
         };
         MyGridList.prototype.itemRenderer = function (row, key) {
-            var XLENGTH = 100, style = { display: "inline-block", width: "100px" };
+            var XLENGTH = 100;
             return JReact.createElement(
             //COLUMN
             JReactComponents.List, {
                 axis: JReactComponents.Axis.x,
-                key: key,
+                key: row,
                 pageSize: 10,
                 threshold: 20,
                 listType: JReactComponents.ListType.uniform,
                 itemsRenderer: this.itemsRenderer,
-                itemRenderer: function (col, key) { return JReact.createElement('div', { key: key, style: style }, 'x' + (col + (XLENGTH * row)) + 'x'); },
-                length: XLENGTH
+                itemRenderer: function (col, key, first, offset, scroll) {
+                    var style = { display: "inline-block", width: "100px" };
+                    if (first) {
+                        style.position = 'relative';
+                        style.left = (scroll - offset) + 'px';
+                        style.backgroundColor = 'yellow';
+                    }
+                    return JReact.createElement('div', { key: col, style: style }, 'x' + (col + (XLENGTH * row)) + 'x');
+                },
+                length: XLENGTH,
+                fixedHeader: true
             });
         };
         MyGridList.prototype.render = function () {
@@ -1657,7 +1662,8 @@ var JReactComponents;
             this.setState(this.constrain(fromIndex, size, itemsPerRow, nextProps));
         };
         List.prototype.componentDidMount = function () {
-            this.updateFrame = this.updateFrame.bind(this);
+            this.updateFrame = Utils.debounce(this.updateFrame.bind(this), 0, false);
+            //this.updateFrame = this.updateFrame.bind(this);
             jQuery(window).bind('resize', this.updateFrame);
             this.updateFrame();
         };
@@ -1741,8 +1747,13 @@ var JReactComponents;
                 scrollParent[getClientSizeKey(axis)];
         };
         List.prototype.getScrollSize = function () {
+            return this.getScrollFromKey(getScrollSizeKey(this.props.axis));
+        };
+        List.prototype.getScrollStart = function () {
+            return this.getScrollFromKey(getScrollStartKey(this.props.axis));
+        };
+        List.prototype.getScrollFromKey = function (key) {
             var scrollParent = this.scrollParent;
-            var key = getScrollSizeKey(this.props.axis);
             return scrollParent === window ?
                 Math.max(document.body[key], document.documentElement[key]) :
                 scrollParent[key];
@@ -1849,7 +1860,7 @@ var JReactComponents;
                 cache[i] = space;
                 var itemSize_1 = this.getSizeOf(i);
                 if (itemSize_1 == null)
-                    break;
+                    return null;
                 space += itemSize_1;
             }
             return cache[index] = space;
@@ -1890,20 +1901,27 @@ var JReactComponents;
             if (index != null)
                 this.setScroll(this.getSpaceBefore(index));
         };
-        List.prototype.renderItems = function () {
+        List.prototype.renderItems = function (offset) {
             var _a = this.props, itemRenderer = _a.itemRenderer, itemsRenderer = _a.itemsRenderer;
             var _b = this.state, fromIndex = _b.fromIndex, size = _b.size;
             var items = [];
+            var scroll = this.scrollParent ? Math.max(0, this.getScroll()) : 0;
             for (var i = 0; i < size; ++i)
-                items.push(itemRenderer(fromIndex + i, i));
+                items.push(itemRenderer(fromIndex + i, i, i === 0, offset, scroll));
             return itemsRenderer(items, ITEMS_REFERENCE);
+        };
+        List.prototype.shouldComponentUpdate = function (nextProps, nextState) {
+            if (this.props.fixedHeader)
+                return true;
+            return _super.prototype.shouldComponentUpdate.call(this, nextProps, nextState);
         };
         List.prototype.render = function () {
             var _a = this.props, axis = _a.axis, length = _a.length, listType = _a.listType, useTranslate3d = _a.useTranslate3d;
             var _b = this.state, fromIndex = _b.fromIndex, itemsPerRow = _b.itemsPerRow;
-            var items = this.renderItems();
-            var style = { position: 'relative' };
             var cache = {};
+            var offset = this.getSpaceBefore(fromIndex, cache);
+            var items = this.renderItems(offset);
+            var style = { position: 'relative' };
             var bottom = Math.ceil(length / itemsPerRow) * itemsPerRow;
             var size = this.getSpaceBefore(bottom, cache);
             if (size) {
@@ -1911,7 +1929,6 @@ var JReactComponents;
                 if (axis === Axis.x)
                     style.overflowX = 'hidden';
             }
-            var offset = this.getSpaceBefore(fromIndex, cache);
             var x = axis === Axis.x ? offset : 0;
             var y = axis === Axis.y ? offset : 0;
             var transform = useTranslate3d ?
