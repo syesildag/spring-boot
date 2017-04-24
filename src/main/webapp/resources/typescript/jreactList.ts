@@ -106,6 +106,8 @@ module JReactComponents {
 
     private cache: Cache;
     private scrollParent: HTMLElement;
+    private scroll = 0;
+    private items: JReact.ComponentArray = [];
 
     constructor(props: ListProps) {
       super(props);
@@ -148,8 +150,8 @@ module JReactComponents {
     }
 
     public componentDidMount() {
-      this.updateFrame = Utils.debounce(this.updateFrame.bind(this), 0, false);
-      //this.updateFrame = this.updateFrame.bind(this);
+      //this.updateFrame = Utils.debounce(this.updateFrame.bind(this), 100, false);
+      this.updateFrame = this.updateFrame.bind(this);
       jQuery(window).bind('resize', this.updateFrame);
       this.updateFrame();
     }
@@ -164,6 +166,9 @@ module JReactComponents {
     }
 
     private updateFrame() {
+      if (!this.getElement())
+        return;
+
       this.updateScrollParent();
       switch (this.props.listType) {
         case ListType.variable: return this.updateVariableFrame();
@@ -221,7 +226,8 @@ module JReactComponents {
       const max = this.getScrollSize() - this.getViewportSize();
       const scroll = Math.max(0, Math.min(actual, max));
       const el = this.getElement().get(0);
-      return this.getOffset(scrollParent) + scroll - this.getOffset(el);
+      this.scroll = this.getOffset(scrollParent) + scroll - this.getOffset(el);
+      return this.scroll;
     }
 
     private setScroll(offset: number) {
@@ -244,14 +250,14 @@ module JReactComponents {
     }
 
     private getScrollSize() {
-      return this.getScrollFromKey(getScrollSizeKey(this.props.axis));
+      return this.getFromScrollParent(getScrollSizeKey(this.props.axis));
     }
 
     private getScrollStart() {
-      return this.getScrollFromKey(getScrollStartKey(this.props.axis));
+      return this.getFromScrollParent(getScrollStartKey(this.props.axis));
     }
 
-    private getScrollFromKey(key: string) {
+    private getFromScrollParent(key: string) {
       const {scrollParent} = this;
       return <any>scrollParent === window ?
         Math.max((<any>document.body)[key], (<any>document.documentElement)[key]) :
@@ -431,9 +437,11 @@ module JReactComponents {
       const {itemRenderer, itemsRenderer} = this.props;
       const {fromIndex, size} = this.state;
       const items: JReact.ComponentArray = [];
-      let scroll = this.scrollParent ? Math.max(0, this.getScroll()) : 0;
+
       for (let i = 0; i < size; ++i)
-        items.push(itemRenderer(fromIndex + i, i, i === 0, offset, scroll));
+        items.push(itemRenderer(fromIndex + i, i, i === 0, offset, Math.max(0, this.scroll)));
+
+      this.items = items;
       return itemsRenderer(items, ITEMS_REFERENCE);
     }
 

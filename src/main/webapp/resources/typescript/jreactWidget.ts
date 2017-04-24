@@ -188,7 +188,7 @@ module JReactComponents {
 
     private onMouseDown(e: JQueryEventObject) {
       if (e.button === 0)
-        LongPress.timeout = setTimeout(() => {
+        LongPress.timeout = window.setTimeout(() => {
           this.props.widgetOptions.longCallback.call(this, e);
           LongPress.timeout = null;
         }, this.props.widgetOptions.delay);
