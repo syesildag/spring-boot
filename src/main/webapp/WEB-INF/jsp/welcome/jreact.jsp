@@ -82,8 +82,8 @@
      }, 500);
      
      JReact.renderDOM(JReact.createElement(JReactComponents.Counter, {state: {times: 3}}), jQuery('#counter'));
-     //JReact.renderDOM(JReact.createElement(JReactComponents.MyList, {}), jQuery('#mylist'));
-     JReact.renderDOM(JReact.createElement(JReactComponents.MyGridList, {}), jQuery('#mygridlist'));
+     JReact.renderDOM(JReact.createElement(JReactComponents.MyList, {}), jQuery('#mylist'));
+     //JReact.renderDOM(JReact.createElement(JReactComponents.MyGridList, {}), jQuery('#mygridlist'));
      JReact.renderDOM(JReact.createElement(JReactComponents.Template, {templateID: 'serkan', name: 'xxxxx', label: 'hello template'}), jQuery('#template'));
    });
    </script>
@@ -94,7 +94,7 @@
    <div>
      <p>
        <span id="counter"></span>
-<!--        <span id="value"></span> -->
+       <span id="value"></span>
        <span id="svg"></span>
        <span id="draggable"></span>
        <span id="droppable"></span>

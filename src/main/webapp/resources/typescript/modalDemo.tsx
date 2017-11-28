@@ -3,7 +3,7 @@
 /// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
 /// <reference path="./counter.ts"/>
 /// <reference path="./state.ts"/>
-module Serkan {
+namespace Serkan {
   
   export interface ModalDemoState {
     showModal: boolean;

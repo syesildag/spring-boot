@@ -1,6 +1,6 @@
 /// <reference path="./jreact.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
-module JReactComponents {
+namespace JReactComponents {
 
   interface MyGridListProps extends ListProps {
   }

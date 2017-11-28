@@ -3,7 +3,7 @@
 /**
  * @author Serkan YESILDAG
  */
-module GenericFactory {
+namespace GenericFactory {
   'use strict';
 
   export interface ToString {

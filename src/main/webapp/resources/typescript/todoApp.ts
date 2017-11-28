@@ -2,7 +2,7 @@
 /// <reference path="../typings/es6-promise/es6-promise.d.ts"/>
 /// <reference path="./counter.ts"/>
 /// <reference path="./state.ts"/>
-module Serkan {
+namespace Serkan {
 
   export class TodoApp extends React.Component<CounterProps, CounterState> {
     constructor(props: CounterProps, context: any) {

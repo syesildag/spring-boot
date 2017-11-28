@@ -1,4 +1,4 @@
-module Utils {
+namespace Utils {
   'use strict';
 
   export function uuid(): string {

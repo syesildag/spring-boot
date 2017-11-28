@@ -1,7 +1,7 @@
 /**
  * @author Serkan YESILDAG
  */
-module Functions {
+namespace Functions {
   'use strict';
 
   export interface Supplier<T> {

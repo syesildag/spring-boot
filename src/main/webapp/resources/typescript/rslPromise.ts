@@ -3,7 +3,7 @@
 /**
  * @author Serkan YESILDAG
  */
-module RslPromise {
+namespace RslPromise {
   'use strict';
 
   export interface Executor<T> extends Function {

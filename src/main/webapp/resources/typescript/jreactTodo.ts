@@ -1,6 +1,6 @@
 /// <reference path="./jreact.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
-module JReactComponents {
+namespace JReactComponents {
 
   export interface TodoProps extends JReact.Props {
     todoClick?: (e: JQueryEventObject, message: string) => void,

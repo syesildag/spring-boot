@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts"/>
-module JReact {
+namespace JReact {
   'use strict';
 
   export var DEBUG: boolean = false;

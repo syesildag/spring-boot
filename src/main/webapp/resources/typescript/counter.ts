@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts"/>
-module Serkan {
+namespace Serkan {
   'use strict';
 
   export const ENTER_KEY = 13;

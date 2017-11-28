@@ -1,6 +1,6 @@
 /// <reference path="./jreact.ts"/>
 /// <reference path="../typings/tsd.d.ts"/>
-module JReactComponents {
+namespace JReactComponents {
 
   const ITEMS_CONTAINER = 'items_container';
   const ITEMS_TRANSLATE = 'items_translate';
