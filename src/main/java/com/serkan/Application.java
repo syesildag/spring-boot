@@ -140,6 +140,9 @@ public class Application implements ExitCodeGenerator, InitializingBean {
       logger.debug("running in initialDelay=1000, fixedRate=5000...");
    }
    
+   /* (non-Javadoc)
+    * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+    */
    @SuppressWarnings("unqualified-field-access")
    @Override
    public void afterPropertiesSet()
