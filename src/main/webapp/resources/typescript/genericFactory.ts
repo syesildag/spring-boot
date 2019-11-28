@@ -1,9 +1,12 @@
 /// <reference path="./functions.ts"/>
 
+import { Functions } from "./functions";
+
 /**
  * @author Serkan YESILDAG
  */
-namespace GenericFactory {
+
+export namespace GenericFactory {
   'use strict';
 
   export interface ToString {
@@ -11,27 +14,23 @@ namespace GenericFactory {
   }
 
   export interface Constructor<K, T extends Functions.Supplier<K>> {
-    new (...args: Array<any>): T;
+    new( ...args: Array<any> ): T;
   }
 
-  export class Base<K extends ToString, T extends Functions.Supplier<K>> {
-    private classMap: { [index: string]: Constructor<K, T> };
+  export abstract class Base<K extends ToString, T extends Functions.Supplier<K>> {
+    private readonly classMap: { [index: string]: Constructor<K, T> };
 
-    constructor() {
+    protected constructor( ...classList: Array<Constructor<K, T>> ) {
       this.classMap = {};
-      for (let clazz of this.getClassList()) {
+      for ( let clazz of classList ) {
         let key: K = new clazz().supply();
         this.classMap[key.toString()] = clazz;
       }
     }
 
-    public create(key: K, ...args: Array<any>): T {
+    public create( key: K, ...args: Array<any> ): T {
       let clazz = this.classMap[key.toString()];
-      return new clazz(args);
-    }
-
-    protected getClassList(): Array<Constructor<K, T>> {
-      return [];
+      return new clazz( args );
     }
   }
 }

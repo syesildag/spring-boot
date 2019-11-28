@@ -24,9 +24,7 @@
    <script src="/webjars/react/0.14.0/react-dom.js"></script>
    <script src="/webjars/jquery/2.1.3/jquery.js"></script>
    <script src="/webjars/jquery-ui/1.11.3/jquery-ui.js"></script>
-   <script src="/resources/js/jquery.ui.touch-punch.js"></script>
-   <script src="/resources/js/freezer.js"></script>
-   <script src="/resources/js/bundle.js"></script>
+   <script src="/resources/js/dist/bundle.js"></script>
    
    <script type="text/html" id="serkan">
      <span name="xxxxx">---8<---Test Template---8<---</span>
@@ -46,45 +44,7 @@
    JReact.bootstrap(document);
    
    jQuery(function(){
-     var index = 0, todos = [], nIntervalID;
-     
-     function xxx(e, message){
-       todos = todos.map(function(todo){
-         
-         if(todo.message === message) {
-           return jQuery.extend({}, todo, {active: true, selected: e.ctrlKey ? !todo.selected : true});
-         }
-         else if(!e.ctrlKey && (todo.active || todo.selected) ) {
-           return jQuery.extend({}, todo, {active: false, selected: false});
-         }
-         else if(todo.active) {
-           return jQuery.extend({}, todo, {active: false});
-         }
-         
-         return todo;
-       });
-       
-       JReact.renderDOM(JReact.createElement(JReactComponents.Todos, {todos: todos, todoClick: xxx}), jQuery('#value'));
-     }
-     
-     nIntervalID = setInterval(function(){
-       ++index;
-       
-       if(index > 4) {
-         clearInterval(nIntervalID);
-         todos.shift();
-         todos = [{key: index, message: index, resizable: true}, ...todos];
-       } else {
-         todos = todos.concat({key: index, message: index, active: false, selected: false});
-       }
-       
-       JReact.renderDOM(JReact.createElement(JReactComponents.Todos, {todos: todos, todoClick: xxx}), jQuery('#value'));
-     }, 500);
-     
-     JReact.renderDOM(JReact.createElement(JReactComponents.Counter, {state: {times: 3}}), jQuery('#counter'));
-     JReact.renderDOM(JReact.createElement(JReactComponents.MyList, {}), jQuery('#mylist'));
-     //JReact.renderDOM(JReact.createElement(JReactComponents.MyGridList, {}), jQuery('#mygridlist'));
-     JReact.renderDOM(JReact.createElement(JReactComponents.Template, {templateID: 'serkan', name: 'xxxxx', label: 'hello template'}), jQuery('#template'));
+     //
    });
    </script>
    

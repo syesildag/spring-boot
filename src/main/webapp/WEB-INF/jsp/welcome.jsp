@@ -13,7 +13,6 @@
    <link rel="stylesheet" type="text/css" href="/resources/css/base.css">
    <link rel="stylesheet" type="text/css" href="/resources/css/index.css">
    <link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.11.3/jquery-ui.css">
-   
    <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.css">
    <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap-theme.css">
    
@@ -31,8 +30,7 @@
    <script src="/webjars/react-redux/4.0.0/dist/react-redux.js"></script>
    <script src="/webjars/EventEmitter.js/4.3.0/EventEmitter.js"></script>
    
-   <script src="/resources/js/freezer.js"></script>
-   <script src="/resources/js/bundle.js"></script>
+   <script src="/resources/js/dist/jreact.js"></script>
    
    <script type="text/javascript">
        $(document).ready(function() {
@@ -58,22 +56,13 @@
        <td><a href="${testURL}">Test</a></td>
      </tr>
      <tr>
-       <td><a href="/welcome/counter">Counter (React)</a></td>
-     </tr>
-     <tr>
-       <td><a href="/welcome/bootstrap">Bootstrap (React-Bootstrap)</a></td>
-     </tr>
-     <tr>
-       <td><a href="/welcome/todo">ToDo (React-Freezer)</a></td>
-     </tr>
-     <tr>
        <td><a href="/welcome/redux">Counter (Vanilla Redux)</a></td>
      </tr>
      <tr>
-       <td><a href="/welcome/grid">react-grid-layout</a></td>
+       <td><a href="/welcome/jreact">JReact</a></td>
      </tr>
      <tr>
-       <td><a href="/welcome/jreact">JReact</a></td>
+       <td><a href="/welcome/scrollSync">ScrollSync</a></td>
      </tr>
      <tr>
        <td><a href="/welcome/redirect">REDIRECT</a></td>

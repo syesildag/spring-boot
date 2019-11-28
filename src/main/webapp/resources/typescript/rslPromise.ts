@@ -1,34 +1,55 @@
-/// <reference path="../typings/tsd.d.ts"/>
 /// <reference path="./genericFactory.ts"/>
+
+import { GenericFactory } from "./genericFactory";
+
 /**
  * @author Serkan YESILDAG
  */
-namespace RslPromise {
+export namespace RslPromise {
   'use strict';
 
   export interface Executor<T> extends Function {
-    (resolve: (value?: T | Thenable<T>) => void, reject: (error?: any) => void): void;
+    ( resolve: ( value?: T | Thenable<T> ) => void, reject: ( error?: any ) => void ): void;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   export interface Thenable<T> {
-    then<U>(onFulfilled?: (value: T) => U | Thenable<U>, onRejected?: (error: any) => U | Thenable<U>): Thenable<U>;
-    then<U>(onFulfilled?: (value: T) => U | Thenable<U>, onRejected?: (error: any) => void): Thenable<U>;
+    then<U>( onFulfilled?: ( value: T ) => U | Thenable<U>, onRejected?: ( error: any ) => U | Thenable<U> ): Thenable<U>;
+
+    then<U>( onFulfilled?: ( value: T ) => U | Thenable<U>, onRejected?: ( error: any ) => void ): Thenable<U>;
+
+    // noinspection JSUnusedLocalSymbols
+    catch?<U>( onRejected?: ( error: any ) => U | Thenable<U> ): Thenable<T | U>;
+
+    // noinspection JSDeprecatedSymbols
+    fail?( failCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...failCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]> ): JQueryPromise<T>;
+
+    // noinspection JSDeprecatedSymbols
+    always?( alwaysCallback1?: JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[], ...alwaysCallbacksN: Array<JQueryPromiseCallback<any> | JQueryPromiseCallback<any>[]> ): JQueryPromise<T>;
+
+    // noinspection JSUnusedLocalSymbols
+    finally?<U>( onRejected?: ( error?: any ) => U | Thenable<U> ): Thenable<T | U>;
   }
 
   export interface Promise<T> {
-    create<T>(func: Executor<T>, context: any): Thenable<T>;
-    resolve<T>(value?: T | Thenable<T>): Thenable<T>;
-    reject<T>(error: T): Thenable<T>;
-    all<T>(promises: (T | Thenable<T>)[]): Thenable<T[]>;
+    create<T>( func: Executor<T>, context: any ): Thenable<T>;
+
+    resolve<T>( value?: T | Thenable<T> ): Thenable<T>;
+
+    reject<T>( error: T ): Thenable<T>;
+
+    all<T>( promises: ( T | Thenable<T> )[] ): Thenable<T[]>;
   }
 
   export interface KeyPromise<K, T> extends Promise<T> {
     supply(): K;
   }
 
-  enum Type { NATIVE, JQUERY };
+  enum Type { // noinspection JSUnusedGlobalSymbols
+    NATIVE, JQUERY
+  }
 
-  class NativePromise<T> implements KeyPromise<Type, T> {
+  class NativePromiseImpl<T> implements KeyPromise<Type, T> {
 
     constructor() {
     }
@@ -37,24 +58,24 @@ namespace RslPromise {
       return Type.NATIVE;
     }
 
-    public create<T>(func: Executor<T>, context: any): Thenable<T> {
-      return new Promise(func.bind(context));
+    public create<T>( func: Executor<T>, context: any ): Thenable<T> {
+      return new Promise( func.bind( context ) );
     }
 
-    public resolve<T>(value?: T | Thenable<T>): Thenable<T> {
-      return Promise.resolve(<T>value);
+    public resolve<T>( value?: T | Thenable<T> ): Thenable<T> {
+      return Promise.resolve( <T>value );
     }
 
-    public reject<T>(error: T): Thenable<T> {
-      return Promise.reject(error);
+    public reject<T>( error: T ): Thenable<T> {
+      return Promise.reject( error );
     }
 
-    public all<T>(promises: (T | Thenable<T>)[]): Thenable<T[]> {
-      return Promise.all(promises as T[]);
+    public all<T>( promises: ( T | Thenable<T> )[] ): Thenable<T[]> {
+      return Promise.all( promises as T[] );
     }
   }
 
-  class JQueryPromise<T> implements KeyPromise<Type, T> {
+  class JQueryPromiseImpl<T> implements KeyPromise<Type, T> {
     constructor() {
     }
 
@@ -62,44 +83,46 @@ namespace RslPromise {
       return Type.JQUERY;
     }
 
-    public create<T>(func: Executor<T>, context: any): Thenable<T> {
-      var deferred = jQuery.Deferred();
-      func.call(context, deferred.resolve, deferred.reject);
+    public create<T>( func: Executor<T>, context: any ): Thenable<T> {
+      const deferred = jQuery.Deferred<T>();
+      func.call( context, deferred.resolve, deferred.reject );
       return deferred.promise();
     }
 
-    public resolve<T>(value?: T | Thenable<T>): Thenable<T> {
-      var deferred = jQuery.Deferred();
-      deferred.resolve(value);
+    public resolve<T>( value?: T | Thenable<T> ): Thenable<T> {
+      const deferred = jQuery.Deferred<T>();
+      deferred.resolve( <T>value );
       return deferred.promise();
     }
 
-    public reject<T>(error: T): Thenable<T> {
-      var deferred = jQuery.Deferred();
-      deferred.reject(error);
+    public reject<T>( error: T ): Thenable<T> {
+      const deferred = jQuery.Deferred<T>();
+      deferred.reject( error );
       return deferred.promise();
     }
 
-    public all<T>(promises: (T | Thenable<T>)[]): Thenable<T[]> {
-      return new Wrapper(jQuery.when(...(<any>promises)));
+    public all<T>( promises: ( T | Thenable<T> )[] ): Thenable<T[]> {
+      return new Wrapper( jQuery.when( ...( <any>promises ) ) );
     }
   }
 
   class Wrapper<T> implements Thenable<T[]> {
-    constructor(private thenable: Thenable<T[]>) {
+    constructor( private thenable: Thenable<T[]> ) {
     }
 
-    public then<U>(onFulfilled?: (value: T[]) => U | Thenable<U>, onRejected?: (error: any) => U | Thenable<U>) {
-      function onFulfilledWrapper(...args: T[]) {
-        return onFulfilled.call(this, args);
+    public then<U>( onFulfilled?: ( value: T[] ) => U | Thenable<U>, onRejected?: ( error: any ) => U | Thenable<U> ) {
+      function onFulfilledWrapper( ...args: T[] ) {
+        return onFulfilled.call( this, args );
       }
-      return this.thenable.then(<any>onFulfilledWrapper, onRejected);
+
+      return this.thenable.then( <any>onFulfilledWrapper, onRejected );
     }
   }
 
   class PromiseFactory<T> extends GenericFactory.Base<Type, KeyPromise<Type, T>> {
-    protected getClassList(): Array<GenericFactory.Constructor<Type, KeyPromise<Type, T>>> {
-      return [NativePromise, JQueryPromise];
+
+    constructor() {
+      super( NativePromiseImpl, JQueryPromiseImpl );
     }
   }
 
@@ -110,25 +133,25 @@ namespace RslPromise {
   let promise: Promise<any>;
   let promiseFactory = new PromiseFactory();
 
-  export function forceJQuery(forceJQuery: boolean) {
-    promise = !forceJQuery && isNative() ? promiseFactory.create(Type.NATIVE) : promiseFactory.create(Type.JQUERY);
+  export function forceJQuery( forceJQuery: boolean ) {
+    promise = !forceJQuery && isNative() ? promiseFactory.create( Type.NATIVE ) : promiseFactory.create( Type.JQUERY );
   }
 
-  forceJQuery(false);
+  forceJQuery( false );
 
-  export function create<T>(func: Executor<T>, context: any): Thenable<T> {
-    return promise.create(func, context);
+  export function create<T>( func: Executor<T>, context?: any ): Thenable<T> {
+    return promise.create( func, context );
   }
 
-  export function resolve<T>(value?: T | Thenable<T>): Thenable<T> {
-    return promise.resolve(value);
+  export function resolve<T>( value?: T | Thenable<T> ): Thenable<T> {
+    return promise.resolve( value );
   }
 
-  export function reject<T>(error?: T): Thenable<T> {
-    return promise.reject(error);
+  export function reject<T>( error?: T ): Thenable<T> {
+    return promise.reject( error );
   }
 
-  export function all<T>(promises: (T | Thenable<T>)[]): Thenable<T[]> {
-    return promise.all(promises);
+  export function all<T>( promises: ( T | Thenable<T> )[] ): Thenable<T[]> {
+    return promise.all( promises );
   }
 }
