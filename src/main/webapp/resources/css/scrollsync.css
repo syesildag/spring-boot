@@ -1,0 +1,8 @@
+.LeftSideGrid {
+ overflow: hidden !important;
+}
+
+.HeaderGrid {
+ overflow: hidden !important;
+ background-color: silver;
+}
