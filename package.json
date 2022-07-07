@@ -38,7 +38,7 @@
 		"csstype": "^2.6.5",
 		"date-fns": "^2.0.0-alpha.27",
 		"emotion": "^9.2.12",
-		"moment": "^2.24.0",
+		"moment": "^2.29.4",
 		"prop-types": "^15.7.2",
 		"react": "^16.8.6",
 		"react-beautiful-dnd": "^10.1.1",
