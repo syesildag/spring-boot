@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc41</version><!--$NO-MVN-MAN-VER$ -->
+			<version>42.3.7</version><!--$NO-MVN-MAN-VER$ -->
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
